@@ -1,0 +1,54 @@
+<h2>Kursevi</h2>
+
+<div *ngFor="let course of courses">
+  <h3>
+    <a [routerLink]="['/course', course.id]">{{ course.title }}</a>
+  </h3>
+  <p>{{ course.description }}</p>
+
+  <!-- Prikaz slike ako postoji -->
+  <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" width="150" />
+
+  <!-- Dugmad -->
+  <button (click)="confirmDelete(course.id)">Obriši</button>
+  <button (click)="editCourse(course)">Uredi</button>
+
+  <!-- Upload slike za svaki kurs -->
+  <input type="file" (change)="uploadImage($event, course.id)" />
+</div>
+
+<!-- Forma za uređivanje selektovanog kursa -->
+<div *ngIf="selectedCourse">
+  <h3>Uredi kurs</h3>
+  <form #courseForm="ngForm">
+    <label for="title">Naslov:</label>
+    <input 
+      type="text" 
+      id="title"
+      [(ngModel)]="selectedCourse.title" 
+      name="title" 
+      required
+    />
+    
+    <label for="description">Opis:</label>
+    <input 
+      type="text" 
+      id="description"
+      [(ngModel)]="selectedCourse.description" 
+      name="description" 
+      required
+    />
+    
+    <button 
+      type="button" 
+      (click)="updateCourse()" 
+      [disabled]="!courseForm.form.valid || isUpdating">
+      {{ isUpdating ? 'Čuva...' : 'Spasi promjene' }}
+    </button>
+    <button type="button" (click)="selectedCourse = null">Otkaži</button>
+
+    <!-- Upload slike za selektovani kurs -->
+    <input type="file" (change)="uploadImage($event, selectedCourse.id)" />
+    <img *ngIf="selectedCourse.image" [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" width="150" />
+  </form>
+</div>

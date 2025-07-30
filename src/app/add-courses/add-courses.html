@@ -1,0 +1,13 @@
+<h2>Dodaj novi kurs</h2>
+
+<form (ngSubmit)="addCourse()">
+  <label>Naziv kursa:</label><br>
+  <input type="text" [(ngModel)]="title" name="title" required><br><br>
+
+  <label>Opis kursa:</label><br>
+  <textarea [(ngModel)]="description" name="description" required></textarea><br><br>
+
+  <button type="submit">Dodaj</button>
+</form>
+
+<p *ngIf="message">{{ message }}</p>

@@ -1,0 +1,15 @@
+<h2>Prijava</h2>
+<form (ngSubmit)="login()">
+  <label>Email:</label>
+  <input type="email" [(ngModel)]="email" name="email" required />
+  <br />
+
+  <label>Lozinka:</label>
+  <input type="password" [(ngModel)]="password" name="password" required />
+  <br />
+
+  <button type="submit">Prijavi se</button>
+</form>
+
+<p *ngIf="error" style="color:red">{{ error }}</p>
+<p *ngIf="success" style="color:green">Uspješna prijava!</p>
