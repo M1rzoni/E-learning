@@ -7,7 +7,11 @@
   <label>Opis kursa:</label><br>
   <textarea [(ngModel)]="description" name="description" required></textarea><br><br>
 
-  <button type="submit">Dodaj</button>
+  <button type="submit" [disabled]="isLoading">
+    {{ isLoading ? 'Dodavanje...' : 'Dodaj' }}
+  </button>
 </form>
 
-<p *ngIf="message">{{ message }}</p>
+<p *ngIf="message" [class]="message.includes('✅') ? 'success' : 'error'">
+  {{ message }}
+</p>

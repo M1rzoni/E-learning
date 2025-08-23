@@ -8,7 +8,8 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   standalone: true,
   selector: 'app-courses-list',
   templateUrl: './courses.html',
-  imports: [CommonModule, HttpClientModule, FormsModule,RouterLink,RouterOutlet]
+   styleUrls: ['./courses.css'],
+  imports: [CommonModule, HttpClientModule, FormsModule, RouterLink,],
 })
 export class CoursesListComponent implements OnInit {
   courses: any[] = [];
@@ -25,34 +26,45 @@ export class CoursesListComponent implements OnInit {
     this.selectedCourse = { ...course }; 
   }
   
-    uploadImage(event: any, courseId: number) {
-  const file = event.target.files[0];
-  const formData = new FormData();
-  formData.append('image', file);
-  formData.append('id', courseId.toString());
+  uploadImage(event: any, courseId: number) {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('id', courseId.toString());
 
-  this.http.post<any>('http://localhost/eucenje-backend/upload-image.php', formData).subscribe(
-    res => {
-      alert('Slika uspješno uploadovana!');
-      this.loadCourses(); // ponovo učitaj da se vidi slika
-    },
-    err => {
-      alert('Greška pri uploadu slike.');
-    }
-  );
-}
+    this.http.post<any>('http://localhost/eucenje-backend/upload-image.php', formData).subscribe(
+      res => {
+        alert('Slika uspješno uploadovana!');
+        this.loadCourses(); 
+      },
+      err => {
+        alert('Greška pri uploadu slike.');
+      }
+    );
+  }
+
+  // Grupisanje kurseva po kategoriji
+  getGroupedCourses() {
+    const grouped: { [key: string]: any[] } = {};
+
+    this.courses.forEach(course => {
+      if (!grouped[course.category]) {
+        grouped[course.category] = [];
+      }
+      grouped[course.category].push(course);
+    });
+
+    return grouped;
+  }
 
   updateCourse() {
     if (!this.selectedCourse || this.isUpdating) return;
     
     this.isUpdating = true;
-    console.log('Sending update request for:', this.selectedCourse);
     
     this.http.post('http://localhost/eucenje-backend/update-course.php', this.selectedCourse)
       .subscribe({
         next: (response) => {
-          console.log('Update response:', response);
-          
           const courseIndex = this.courses.findIndex(c => c.id === this.selectedCourse.id);
           if (courseIndex !== -1) {
             this.courses[courseIndex] = { ...this.selectedCourse };
@@ -61,7 +73,6 @@ export class CoursesListComponent implements OnInit {
           alert('Kurs je ažuriran.');
           this.selectedCourse = null;
           this.isUpdating = false;
-          console.log('Calling loadCourses to refresh data...');
           this.loadCourses(); 
         },
         error: (error) => {
@@ -73,11 +84,9 @@ export class CoursesListComponent implements OnInit {
   }
 
   loadCourses() {
-    console.log('Loading courses...');
     this.http.get<any[]>('http://localhost/eucenje-backend/courses.php')
       .subscribe({
         next: (data) => {
-          console.log('Courses loaded:', data);
           this.courses = data;
         },
         error: (error) => {
@@ -105,7 +114,4 @@ export class CoursesListComponent implements OnInit {
         }
       });
   }
-
-
-
 }

@@ -1,20 +1,25 @@
-<h2>Kursevi</h2>
+<h2>Kursevi po kategorijama</h2>
 
-<div *ngFor="let course of courses">
-  <h3>
-    <a [routerLink]="['/course', course.id]">{{ course.title }}</a>
-  </h3>
-  <p>{{ course.description }}</p>
+<!-- Grupisani prikaz po kategorijama -->
+<div *ngFor="let category of getGroupedCourses() | keyvalue">
+  <h2>{{ category.key }}</h2>
 
-  <!-- Prikaz slike ako postoji -->
-  <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" width="150" />
+  <div *ngFor="let course of category.value">
+    <h3>
+      <a [routerLink]="['/course', course.id]">{{ course.title }}</a>
+    </h3>
+    <p>{{ course.description }}</p>
 
-  <!-- Dugmad -->
-  <button (click)="confirmDelete(course.id)">Obriši</button>
-  <button (click)="editCourse(course)">Uredi</button>
+    <!-- Slika kursa -->
+    <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" width="150" />
 
-  <!-- Upload slike za svaki kurs -->
-  <input type="file" (change)="uploadImage($event, course.id)" />
+    <!-- Dugmad -->
+    <button (click)="confirmDelete(course.id)">Obriši</button>
+    <button (click)="editCourse(course)">Uredi</button>
+
+    <!-- Upload slike -->
+    <input type="file" (change)="uploadImage($event, course.id)" />
+  </div>
 </div>
 
 <!-- Forma za uređivanje selektovanog kursa -->
@@ -29,7 +34,7 @@
       name="title" 
       required
     />
-    
+
     <label for="description">Opis:</label>
     <input 
       type="text" 
@@ -38,6 +43,13 @@
       name="description" 
       required
     />
+
+    <label for="category">Kategorija:</label>
+    <select id="category" [(ngModel)]="selectedCourse.category" name="category" required>
+      <option value="Frontend">Frontend</option>
+      <option value="Backend">Backend</option>
+      <option value="Dizajn">Dizajn</option>
+    </select>
     
     <button 
       type="button" 
