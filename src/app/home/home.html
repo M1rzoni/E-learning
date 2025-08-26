@@ -1,0 +1,105 @@
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <h2>E-Učenje</h2>
+    </div>
+    
+    <div class="nav-menu">
+      <a routerLink="/home" class="nav-link active">Početna</a>
+      <a routerLink="/courses" class="nav-link">Kursevi</a>
+      <a routerLink="/add-courses" class="nav-link">Dodaj Kurs</a>
+    </div>
+    
+    <div class="nav-user">
+      <div class="user-dropdown">
+        <span class="user-name">👤 {{ currentUser?.name || 'Korisnik' }}</span>
+        <div class="dropdown-content">
+          <a (click)="logout()">Odjava</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Unapredi svoje veštine danas</h1>
+    <p>Otkrijte kurseve koji će vam pomoći da postanete bolji u onome što volite.</p>
+    <button class="cta-button" routerLink="/courses">Istraži Kurseve</button>
+  </div>
+  <div class="hero-image">
+    <div class="placeholder-image">🎓</div>
+  </div>
+</section>
+
+<!-- Featured Courses -->
+<section class="featured-courses">
+  <div class="container">
+    <h2>Istaknuti Kursevi</h2>
+    <div class="courses-grid">
+      <div *ngFor="let course of featuredCourses" class="course-card" [routerLink]="['/course', course.id]">
+        <div class="course-image">
+          <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
+          <div *ngIf="!course.image" class="course-image-placeholder">📚</div>
+        </div>
+        <div class="course-content">
+          <h3>{{ course.title }}</h3>
+          <p class="course-description">{{ course.description  }}</p>
+          <div class="course-meta">
+            <span class="course-category">{{ course.category }}</span>
+            <span class="course-rating">⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories">
+  <div class="container">
+    <h2>Kategorije Kurseva</h2>
+    <div class="categories-grid">
+      <div *ngFor="let category of categories" class="category-card">
+        <div class="category-icon">{{ category.icon }}</div>
+        <h3>{{ category.name }}</h3>
+        <p>{{ getCoursesByCategory(category.name).length }} kurseva</p>
+        <button class="category-button" [routerLink]="['/courses']" [queryParams]="{category: category.name}">Pogledaj</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Courses by Category -->
+<section *ngFor="let category of categories" class="category-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>{{ category.name }} Kursevi</h2>
+      <a [routerLink]="['/courses']" [queryParams]="{category: category.name}" class="view-all">Pogledaj sve</a>
+    </div>
+    <div class="courses-grid">
+      <div *ngFor="let course of getCoursesByCategory(category.name)" class="course-card" [routerLink]="['/course', course.id]">
+        <div class="course-image">
+          <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
+          <div *ngIf="!course.image" class="course-image-placeholder">📚</div>
+        </div>
+        <div class="course-content">
+          <h3>{{ course.title }}</h3>
+          <p class="course-description">{{ course.description }}</p>
+          <div class="course-meta">
+            <span class="course-category">{{ course.category }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p>&copy; 2023 E-Učenje Platforma. Sva prava zadržana.</p>
+  </div>
+</footer>
