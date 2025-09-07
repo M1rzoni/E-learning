@@ -1,0 +1,281 @@
+/* Osnovni stilovi */
+.add-course-container {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Kartica sa formom */
+.form-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form-header h2 {
+  color: #1c1d1f;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.form-header p {
+  color: #6a6f73;
+  font-size: 1rem;
+}
+
+/* Forma */
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #1c1d1f;
+  font-size: 0.95rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: 12px 16px;
+  border: 2px solid #d1d7dc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #5624d0;
+  box-shadow: 0 0 0 3px rgba(86, 36, 208, 0.1);
+}
+
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+  background-color: #f7f9fa;
+  cursor: not-allowed;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.char-count {
+  font-size: 0.8rem;
+  color: #6a6f73;
+  text-align: right;
+}
+
+.char-count.warning {
+  color: #e59819;
+  font-weight: 600;
+}
+
+/* Akcioni dugmići */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: #5624d0;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #4a1fb8;
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  background-color: #b5b9c0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #6a6f73;
+  border: 2px solid #d1d7dc;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f7f9fa;
+  border-color: #6a6f73;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner za učitavanje */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Status poruke */
+.status-message {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  text-align: center;
+}
+
+.status-message.success {
+  background-color: #f0f9f4;
+  border: 2px solid #2dbb78;
+}
+
+.status-message.error {
+  background-color: #fef0f0;
+  border: 2px solid #e53935;
+}
+
+.message-icon {
+  font-size: 2rem;
+}
+
+.status-message p {
+  margin: 0;
+  font-weight: 500;
+  color: #1c1d1f;
+}
+
+.status-message.success p {
+  color: #2d7761;
+}
+
+.status-message.error p {
+  color: #c13535;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #5624d0;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+
+.btn-link:hover {
+  color: #4a1fb8;
+}
+
+/* Sidebar sa uputstvima */
+.guidance-sidebar {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.guidance-sidebar h3 {
+  color: #1c1d1f;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.tip-card {
+  background: #f7f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #5624d0;
+}
+
+.tip-card h4 {
+  color: #1c1d1f;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.tip-card p {
+  color: #6a6f73;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Responsive dizajn */
+@media (max-width: 968px) {
+  .add-course-container {
+    flex-direction: column;
+  }
+  
+  .guidance-sidebar {
+    flex: 1;
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-card {
+    padding: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

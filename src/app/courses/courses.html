@@ -1,66 +1,280 @@
-<h2>Kursevi po kategorijama</h2>
-
-<!-- Grupisani prikaz po kategorijama -->
-<div *ngFor="let category of getGroupedCourses() | keyvalue">
-  <h2>{{ category.key }}</h2>
-
-  <div *ngFor="let course of category.value">
-    <h3>
-      <a [routerLink]="['/course', course.id]">{{ course.title }}</a>
-    </h3>
-    <p>{{ course.description }}</p>
-
-    <!-- Slika kursa -->
-    <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" width="150" />
-
-    <!-- Dugmad -->
-    <button (click)="confirmDelete(course.id)">Obriši</button>
-    <button (click)="editCourse(course)">Uredi</button>
-
-    <!-- Upload slike -->
-    <input type="file" (change)="uploadImage($event, course.id)" />
-  </div>
-</div>
-
-<!-- Forma za uređivanje selektovanog kursa -->
-<div *ngIf="selectedCourse">
-  <h3>Uredi kurs</h3>
-  <form #courseForm="ngForm">
-    <label for="title">Naslov:</label>
-    <input 
-      type="text" 
-      id="title"
-      [(ngModel)]="selectedCourse.title" 
-      name="title" 
-      required
-    />
-
-    <label for="description">Opis:</label>
-    <input 
-      type="text" 
-      id="description"
-      [(ngModel)]="selectedCourse.description" 
-      name="description" 
-      required
-    />
-
-    <label for="category">Kategorija:</label>
-    <select id="category" [(ngModel)]="selectedCourse.category" name="category" required>
-      <option value="Frontend">Frontend</option>
-      <option value="Backend">Backend</option>
-      <option value="Dizajn">Dizajn</option>
-    </select>
+<div class="course-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">📚 Svi Kursevi</h1>
+    <p class="page-subtitle">Otkrijte našu kolekciju kurseva organizovanih po kategorijama</p>
     
-    <button 
-      type="button" 
-      (click)="updateCourse()" 
-      [disabled]="!courseForm.form.valid || isUpdating">
-      {{ isUpdating ? 'Čuva...' : 'Spasi promjene' }}
-    </button>
-    <button type="button" (click)="selectedCourse = null">Otkaži</button>
+    <div class="header-actions">
+      <a routerLink="/add-courses" class="btn-add-course">
+        <span class="btn-icon">➕</span>
+        Dodaj Novi Kurs
+      </a>
+      <button class="btn-refresh" (click)="loadCourses()">
+        <span class="btn-icon">🔄</span>
+        Osveži
+      </button>
+    </div>
+  </div>
 
-    <!-- Upload slike za selektovani kurs -->
-    <input type="file" (change)="uploadImage($event, selectedCourse.id)" />
-    <img *ngIf="selectedCourse.image" [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" width="150" />
-  </form>
+  <!-- Loading State -->
+  <div *ngIf="courses.length === 0" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Učitavanje kurseva...</p>
+  </div>
+
+  <!-- No Courses State -->
+  <div *ngIf="courses.length === 0" class="empty-state">
+    <div class="empty-icon">📚</div>
+    <h3>Nema dostupnih kurseva</h3>
+    <p>Još uvek nema kurseva. Budite prvi koji će dodati kurs!</p>
+    <a routerLink="/add-courses" class="btn-add-course">
+      <span class="btn-icon">➕</span>
+      Dodaj Prvi Kurs
+    </a>
+  </div>
+
+  <!-- Courses by Category -->
+  <div *ngFor="let category of getGroupedCourses() | keyvalue" class="category-section">
+    <div class="category-header">
+      <h2 class="category-title">
+        <span class="category-icon">{{ getCategoryIcon(category.key) }}</span>
+        {{ category.key }}
+        <span class="course-count">({{ category.value.length }} kursa)</span>
+      </h2>
+      <div class="category-actions">
+        <button class="btn-collapse" (click)="toggleCategory(category.key)">
+          {{ isCategoryExpanded(category.key) ? 'Sakrij' : 'Prikaži' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="isCategoryExpanded(category.key)" class="courses-grid">
+      <div *ngFor="let course of category.value" class="course-card">
+        <!-- Course Image -->
+        <div class="course-image-container">
+          <img 
+            *ngIf="course.image" 
+            [src]="'http://localhost/eucenje-backend/' + course.image" 
+            [alt]="course.title"
+            class="course-image"
+            (error)="handleImageError($event)"
+          />
+          <div *ngIf="!course.image" class="course-image-placeholder">
+            <span class="placeholder-icon">📚</span>
+          </div>
+          
+          <!-- Course Level Badge -->
+          <div class="course-level-badge" [class]="'level-' + (course.level?.toLowerCase() || 'pocetni')">
+            {{ course.level || 'Početni' }}
+          </div>
+        </div>
+
+        <!-- Course Content -->
+        <div class="course-content">
+          <h3 class="course-title">
+            <a [routerLink]="['/course', course.id]" class="course-link">
+              {{ course.title }}
+            </a>
+          </h3>
+          
+          <p class="course-description">
+            {{ course.description }}
+          </p>
+
+          <!-- Course Meta -->
+          <div class="course-meta">
+            <div class="meta-item">
+              <span class="meta-icon">💰</span>
+              <span class="meta-text">{{ course.price ? (course.price + '€') : 'Besplatno' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">⭐</span>
+              <span class="meta-text">4.8 (124)</span>
+            </div>
+          </div>
+
+          <!-- Course Actions -->
+          <div class="course-actions">
+            <button 
+              class="btn btn-view"
+              [routerLink]="['/course', course.id]"
+            >
+              <span class="btn-icon">👁️</span>
+              Pregledaj
+            </button>
+            
+            <button 
+              class="btn btn-edit"
+              (click)="editCourse(course)"
+            >
+              <span class="btn-icon">✏️</span>
+              Uredi
+            </button>
+            
+            <button 
+              class="btn btn-delete"
+              (click)="confirmDelete(course.id)"
+            >
+              <span class="btn-icon">🗑️</span>
+              Obriši
+            </button>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="image-upload-section">
+            <label class="file-upload-label">
+              <input 
+                type="file" 
+                (change)="uploadImage($event, course.id)" 
+                accept="image/*"
+                class="file-input"
+              />
+              <span class="upload-icon">📷</span>
+              Promeni sliku
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Course Form -->
+  <div *ngIf="selectedCourse" class="edit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✏️ Uredi Kurs</h3>
+        <button class="modal-close" (click)="selectedCourse = null">
+          &times;
+        </button>
+      </div>
+
+      <form #courseForm="ngForm" class="edit-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-title" class="form-label">Naslov Kursa *</label>
+            <input 
+              type="text" 
+              id="edit-title"
+              [(ngModel)]="selectedCourse.title" 
+              name="title" 
+              class="form-input"
+              required
+              placeholder="Unesite naslov kursa"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-category" class="form-label">Kategorija *</label>
+            <select 
+              id="edit-category"
+              [(ngModel)]="selectedCourse.category" 
+              name="category" 
+              class="form-select"
+              required
+            >
+              <option value="">Odaberite kategoriju</option>
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Dizajn">Dizajn</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Mobile">Mobile Development</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-description" class="form-label">Opis Kursa *</label>
+          <textarea 
+            id="edit-description"
+            [(ngModel)]="selectedCourse.description" 
+            name="description" 
+            class="form-textarea"
+            required
+            rows="4"
+            placeholder="Detaljno opišite kurs..."
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-level" class="form-label">Nivo Težine</label>
+            <select 
+              id="edit-level"
+              [(ngModel)]="selectedCourse.level" 
+              name="level" 
+              class="form-select"
+            >
+              <option value="Početni">Početni</option>
+              <option value="Srednji">Srednji</option>
+              <option value="Napredni">Napredni</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-price" class="form-label">Cena (€)</label>
+            <input 
+              type="number" 
+              id="edit-price"
+              [(ngModel)]="selectedCourse.price" 
+              name="price" 
+              class="form-input"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <!-- Current Image -->
+        <div class="form-group" *ngIf="selectedCourse.image">
+          <label class="form-label">Trenutna Slika</label>
+          <img 
+            [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" 
+            class="current-image"
+            (error)="handleImageError($event)"
+          />
+        </div>
+
+        <!-- Image Upload for Edit -->
+        <div class="form-group">
+          <label class="form-label">Promeni Sliku</label>
+          <label class="file-upload-label">
+            <input 
+              type="file" 
+              (change)="uploadImage($event, selectedCourse.id)" 
+              accept="image/*"
+              class="file-input"
+            />
+            <span class="upload-icon">📷</span>
+            Izaberi novu sliku
+          </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn btn-save"
+            (click)="updateCourse()" 
+            [disabled]="!courseForm.form.valid || isUpdating"
+          >
+            <span class="btn-icon" *ngIf="!isUpdating">💾</span>
+            <span class="btn-spinner" *ngIf="isUpdating"></span>
+            {{ isUpdating ? 'Čuvanje...' : 'Sačuvaj Promene' }}
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn btn-cancel"
+            (click)="selectedCourse = null"
+            [disabled]="isUpdating"
+          >
+            <span class="btn-icon">❌</span>
+            Otkaži
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

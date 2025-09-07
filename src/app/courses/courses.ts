@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-courses-list',
   templateUrl: './courses.html',
-   styleUrls: ['./courses.css'],
-  imports: [CommonModule, HttpClientModule, FormsModule, RouterLink,],
+  styleUrls: ['./courses.css'],
+  imports: [CommonModule, FormsModule, RouterLink],
 })
 export class CoursesListComponent implements OnInit {
   courses: any[] = [];
   selectedCourse: any = null;
-  isUpdating = false; 
+  isUpdating = false;
+  expandedCategories: Set<string> = new Set();
 
   constructor(private http: HttpClient) {}
 
@@ -22,12 +23,63 @@ export class CoursesListComponent implements OnInit {
     this.loadCourses();
   }
 
+  // Pomocna funkcija za ikone kategorija
+  getCategoryIcon(category: string): string {
+    const icons: { [key: string]: string } = {
+      'Frontend': '💻',
+      'Backend': '⚙️',
+      'Dizajn': '🎨',
+      'Marketing': '📈',
+      'Data Science': '📊',
+      'Mobile': '📱'
+    };
+    return icons[category] || '📚';
+  }
+
+  // Upravljanje prikazom kategorija
+  toggleCategory(category: string) {
+    if (this.expandedCategories.has(category)) {
+      this.expandedCategories.delete(category);
+    } else {
+      this.expandedCategories.add(category);
+    }
+  }
+
+  isCategoryExpanded(category: string): boolean {
+    return this.expandedCategories.has(category);
+  }
+
+  // Rukovanje greškama slika
+  handleImageError(event: any) {
+    event.target.style.display = 'none';
+    const parent = event.target.parentElement;
+    if (parent) {
+      const placeholder = parent.querySelector('.course-image-placeholder');
+      if (placeholder) {
+        placeholder.style.display = 'flex';
+      }
+    }
+  }
+
   editCourse(course: any) {
-    this.selectedCourse = { ...course }; 
+    this.selectedCourse = { ...course };
   }
   
   uploadImage(event: any, courseId: number) {
     const file = event.target.files[0];
+    if (!file) return;
+
+    // Validacija slike
+    if (!file.type.startsWith('image/')) {
+      alert('Molimo izaberite isključivo sliku.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      alert('Slika je prevelika. Maksimalna veličina je 5MB.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('image', file);
     formData.append('id', courseId.toString());
@@ -39,6 +91,7 @@ export class CoursesListComponent implements OnInit {
       },
       err => {
         alert('Greška pri uploadu slike.');
+        console.error('Upload error:', err);
       }
     );
   }
@@ -48,10 +101,11 @@ export class CoursesListComponent implements OnInit {
     const grouped: { [key: string]: any[] } = {};
 
     this.courses.forEach(course => {
-      if (!grouped[course.category]) {
-        grouped[course.category] = [];
+      const category = course.category || 'Nekategorisano';
+      if (!grouped[category]) {
+        grouped[category] = [];
       }
-      grouped[course.category].push(course);
+      grouped[category].push(course);
     });
 
     return grouped;
@@ -88,6 +142,12 @@ export class CoursesListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.courses = data;
+          // Automatski proširi sve kategorije prvi put
+          if (this.expandedCategories.size === 0) {
+            Object.keys(this.getGroupedCourses()).forEach(category => {
+              this.expandedCategories.add(category);
+            });
+          }
         },
         error: (error) => {
           console.error('Greška pri učitavanju kurseva:', error);
@@ -96,7 +156,7 @@ export class CoursesListComponent implements OnInit {
   }
 
   confirmDelete(id: number) {
-    if (confirm('Jesi li siguran da želiš obrisati ovaj kurs?')) {
+    if (confirm('Jesi li siguran da želiš obrisati ovaj kurs? Ova akcija je nepovratna.')) {
       this.deleteCourse(id);
     }
   }

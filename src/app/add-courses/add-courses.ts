@@ -10,10 +10,14 @@ import { throwError } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './add-courses.html',
+  styleUrls: ['./add-courses.css']
 })
 export class AddCourseComponent {
   title = '';
   description = '';
+  category = '';
+  level = 'Početni';
+  price: number | null = null;
   message = '';
   isLoading = false;
 
@@ -25,7 +29,10 @@ export class AddCourseComponent {
     
     const course = {
       title: this.title,
-      description: this.description
+      description: this.description,
+      category: this.category,
+      level: this.level,
+      price: this.price
     };
 
     this.http.post<any>('http://localhost/eucenje-backend/add-courses.php', course)
@@ -44,11 +51,21 @@ export class AddCourseComponent {
         this.isLoading = false;
         if (response.success) {
           this.message = '✅ Kurs uspješno dodat!';
-          this.title = '';
-          this.description = '';
+          if (!response.message.includes('Dodaj još jedan kurs')) {
+            this.clearForm();
+          }
         } else {
           this.message = '❌ Greška: ' + response.message;
         }
       });
+  }
+
+  clearForm() {
+    this.title = '';
+    this.description = '';
+    this.category = '';
+    this.level = 'Početni';
+    this.price = null;
+    this.message = '';
   }
 }

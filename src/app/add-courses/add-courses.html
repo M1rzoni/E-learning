@@ -1,17 +1,152 @@
-<h2>Dodaj novi kurs</h2>
+<div class="add-course-container">
+  <div class="form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <h2>Dodaj novi kurs</h2>
+      <p>Popunite informacije o novom kursu koji želite da dodate u ponudu</p>
+    </div>
 
-<form (ngSubmit)="addCourse()">
-  <label>Naziv kursa:</label><br>
-  <input type="text" [(ngModel)]="title" name="title" required><br><br>
+    <!-- Forma -->
+    <form (ngSubmit)="addCourse()" class="course-form">
+      <div class="form-group">
+        <label for="title" class="form-label">Naziv kursa *</label>
+        <input 
+          type="text" 
+          id="title"
+          [(ngModel)]="title" 
+          name="title" 
+          class="form-input"
+          placeholder="Unesite naziv kursa"
+          required
+          [disabled]="isLoading"
+        >
+      </div>
 
-  <label>Opis kursa:</label><br>
-  <textarea [(ngModel)]="description" name="description" required></textarea><br><br>
+      <div class="form-group">
+        <label for="category" class="form-label">Kategorija *</label>
+        <select 
+          id="category"
+          [(ngModel)]="category" 
+          name="category" 
+          class="form-select"
+          required
+          [disabled]="isLoading"
+        >
+          <option value="">Odaberite kategoriju</option>
+          <option value="Frontend">Frontend</option>
+          <option value="Backend">Backend</option>
+          <option value="Dizajn">Dizajn</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Data Science">Data Science</option>
+          <option value="Mobile">Mobile Development</option>
+        </select>
+      </div>
 
-  <button type="submit" [disabled]="isLoading">
-    {{ isLoading ? 'Dodavanje...' : 'Dodaj' }}
-  </button>
-</form>
+      <div class="form-group">
+        <label for="description" class="form-label">Opis kursa *</label>
+        <textarea 
+          id="description"
+          [(ngModel)]="description" 
+          name="description" 
+          class="form-textarea"
+          placeholder="Detaljno opišite šta studenti mogu naučiti na ovom kursu..."
+          rows="5"
+          required
+          [disabled]="isLoading"
+        ></textarea>
+        <div class="char-count" [class.warning]="description.length > 290">
+          {{ description.length }}/300 karaktera
+        </div>
+      </div>
 
-<p *ngIf="message" [class]="message.includes('✅') ? 'success' : 'error'">
-  {{ message }}
-</p>
+      <div class="form-group">
+        <label for="level" class="form-label">Nivo težine</label>
+        <select 
+          id="level"
+          [(ngModel)]="level" 
+          name="level" 
+          class="form-select"
+          [disabled]="isLoading"
+        >
+          <option value="Početni">Početni</option>
+          <option value="Srednji">Srednji</option>
+          <option value="Napredni">Napredni</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="price" class="form-label">Cena (€)</label>
+        <input 
+          type="number" 
+          id="price"
+          [(ngModel)]="price" 
+          name="price" 
+          class="form-input"
+          placeholder="0.00"
+          min="0"
+          step="0.01"
+          [disabled]="isLoading"
+        >
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="isLoading || !title || !description || !category"
+        >
+          <span *ngIf="!isLoading">➕ Dodaj kurs</span>
+          <span *ngIf="isLoading">
+            <span class="spinner"></span>
+            Dodavanje...
+          </span>
+        </button>
+        
+        <button 
+          type="button" 
+          class="btn-secondary"
+          (click)="clearForm()"
+          [disabled]="isLoading"
+        >
+          ❌ Očisti formu
+        </button>
+      </div>
+    </form>
+
+    <!-- Poruka o statusu -->
+    <div 
+      *ngIf="message" 
+      class="status-message"
+      [class.success]="message.includes('✅')"
+      [class.error]="message.includes('❌')"
+    >
+      <span class="message-icon">{{ message.includes('✅') ? '✅' : '❌' }}</span>
+      <p>{{ message.replace('✅', '').replace('❌', '') }}</p>
+      <button *ngIf="message.includes('✅')" class="btn-link" (click)="clearForm()">Dodaj još jedan kurs</button>
+    </div>
+  </div>
+
+  <!-- Sidebar sa uputstvima -->
+  <div class="guidance-sidebar">
+    <h3>💡 Saveti za dobar kurs</h3>
+    <div class="tip-card">
+      <h4>Naslov kursa</h4>
+      <p>Napišite jasan i privlačan naslov koji opisuje šta studenti mogu naučiti.</p>
+    </div>
+    
+    <div class="tip-card">
+      <h4>Opis kursa</h4>
+      <p>Budite detaljni! Objasnite šta će studenti moći da rade po završetku kursa.</p>
+    </div>
+    
+    <div class="tip-card">
+      <h4>Kategorija</h4>
+      <p>Odaberite odgovarajuću kategoriju kako bi kurs bio lakše pronađen.</p>
+    </div>
+    
+    <div class="tip-card">
+      <h4>Nivo težine</h4>
+      <p>Označite tačan nivo težine kako bi studenti znali šta da očekuju.</p>
+    </div>
+  </div>
+</div>

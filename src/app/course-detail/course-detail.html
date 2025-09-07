@@ -1,5 +1,137 @@
-<div *ngIf="course">
-  <h2>{{ course.title }}</h2>
-  <p>{{ course.description }}</p>
-  <a routerLink="/">Nazad na listu</a>
+<div class="course-detail-container" *ngIf="course">
+  <!-- Breadcrumb navigacija -->
+  <nav class="breadcrumb">
+    <a routerLink="/home">Početna</a> &gt;
+    <a routerLink="/courses">Kursevi</a> &gt;
+    <span>{{ course.title }}</span>
+  </nav>
+
+  <!-- Glavni sadržaj kursa -->
+  <div class="course-header">
+    <div class="course-info">
+      <h1>{{ course.title }}</h1>
+      <p class="course-description">{{ course.description }}</p>
+      
+      <div class="course-meta">
+        <span class="category-badge">{{ course.category }}</span>
+        <div class="rating">
+          <span class="stars">⭐️⭐️⭐️⭐️⭐️</span>
+          <span class="rating-text">4.8 (256 recenzija)</span>
+        </div>
+        <div class="students-count">
+          <span class="icon">👥</span>
+          <span>1,245 studenata</span>
+        </div>
+      </div>
+
+      <div class="instructor">
+        <div class="instructor-avatar">👨‍🏫</div>
+        <div class="instructor-info">
+          <h4>Predavač: Profesor Marko</h4>
+          <p>Senior developer sa 10+ godina iskustva</p>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-enroll">Dodaj u korpu - 49.99€</button>
+        <button class="btn-wishlist">❤️ Sačuvaj za kasnije</button>
+      </div>
+    </div>
+
+    <div class="course-image">
+      <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
+      <div *ngIf="!course.image" class="image-placeholder">
+        <span>📚</span>
+        <p>Slika kursa</p>
+      </div>
+      
+      <div class="course-highlights">
+        <div class="highlight">
+          <span class="icon">⏱️</span>
+          <span>10h video sadržaja</span>
+        </div>
+        <div class="highlight">
+          <span class="icon">📝</span>
+          <span>25 vežbi</span>
+        </div>
+        <div class="highlight">
+          <span class="icon">📅</span>
+          <span>Pun pristup zauvijek</span>
+        </div>
+        <div class="highlight">
+          <span class="icon">📱</span>
+          <span>Dostupno na svim uređajima</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalji i curriculum -->
+  <div class="course-content">
+    <div class="content-nav">
+      <button class="nav-btn active">Pregled</button>
+      <button class="nav-btn">Curriculum</button>
+      <button class="nav-btn">Recenzije</button>
+      <button class="nav-btn">Diskusije</button>
+    </div>
+
+    <div class="content-section">
+      <h3>Šta ćete naučiti</h3>
+      <ul class="learning-list">
+        <li>✔️ Savladati osnove {{ course.category }} razvoja</li>
+        <li>✔️ Napredne tehnike i najbolje prakse</li>
+        <li>✔️ Praktični projekti za portfolio</li>
+        <li>✔️ Priprema za posao u industriji</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h3>Za koga je ovaj kurs</h3>
+      <ul class="audience-list">
+        <li>• Početnici koji žele da nauče {{ course.category }}</li>
+        <li>• Srednje napredni koji žele da usavrše svoje veštine</li>
+        <li>• Profesionalci koji žele da prošire svoje znanje</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Preporučeni kursevi -->
+  <div class="related-courses">
+    <h2>Slični kursevi</h2>
+    <div class="courses-grid">
+      <div class="course-card">
+        <div class="card-image">
+          <div class="image-placeholder">💻</div>
+        </div>
+        <div class="card-content">
+          <h4>Napredni {{ course.category }} koncepti</h4>
+          <p class="card-description">Produbite svoje znanje sa naprednim temama</p>
+          <div class="card-meta">
+            <span class="card-category">{{ course.category }}</span>
+            <span class="card-price">59.99€</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="card-image">
+          <div class="image-placeholder">🚀</div>
+        </div>
+        <div class="card-content">
+          <h4>{{ course.category }} projekti za portfolio</h4>
+          <p class="card-description">Izgradite impresivan portfolio sa realnim projektima</p>
+          <div class="card-meta">
+            <span class="card-category">{{ course.category }}</span>
+            <span class="card-price">44.99€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div *ngIf="!course" class="loading-container">
+  <div class="loading-spinner"></div>
+  <p>Učitavanje detalja kursa...</p>
 </div>
