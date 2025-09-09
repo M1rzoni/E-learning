@@ -16,10 +16,19 @@ export class CoursesListComponent implements OnInit {
   selectedCourse: any = null;
   isUpdating = false;
   expandedCategories: Set<string> = new Set();
+  currentUser: any;
+  isAdmin: boolean = false; // Dodato
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    // Uzmi trenutnog korisnika
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      this.currentUser = JSON.parse(userData);
+      this.isAdmin = this.currentUser.role === 'admin'; // Provera admin role
+    }
+    
     this.loadCourses();
   }
 
@@ -161,6 +170,11 @@ export class CoursesListComponent implements OnInit {
     }
   }
 
+  canEditCourse(): boolean {
+    return this.isAdmin;
+  }
+
+
   deleteCourse(id: number) {
     this.http.post('http://localhost/eucenje-backend/delete-course.php', { id })
       .subscribe({
@@ -173,5 +187,6 @@ export class CoursesListComponent implements OnInit {
           console.error(error);
         }
       });
+      
   }
 }

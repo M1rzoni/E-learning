@@ -2,13 +2,14 @@
   <!-- Page Header -->
   <div class="page-header">
     <h1 class="page-title">📚 Svi Kursevi</h1>
-    <p class="page-subtitle">Otkrijte našu kolekciju kurseva organizovanih po kategorijama</p>
     
     <div class="header-actions">
-      <a routerLink="/add-courses" class="btn-add-course">
+      <!-- Dodaj kurs dugme - samo za admina -->
+      <a *ngIf="isAdmin" routerLink="/add-courses" class="btn-add-course">
         <span class="btn-icon">➕</span>
         Dodaj Novi Kurs
       </a>
+      
       <button class="btn-refresh" (click)="loadCourses()">
         <span class="btn-icon">🔄</span>
         Osveži
@@ -51,6 +52,8 @@
     <div *ngIf="isCategoryExpanded(category.key)" class="courses-grid">
       <div *ngFor="let course of category.value" class="course-card">
         <!-- Course Image -->
+
+        
         <div class="course-image-container">
           <img 
             *ngIf="course.image" 

@@ -1,9 +1,15 @@
-<div class="course-detail-container" *ngIf="course">
+<div class="course-detail-container" *ngIf="course && !isLoading">
   <!-- Breadcrumb navigacija -->
   <nav class="breadcrumb">
     <a routerLink="/home">Početna</a> &gt;
     <a routerLink="/courses">Kursevi</a> &gt;
     <span>{{ course.title }}</span>
+    
+    <!-- Admin akcije -->
+    <span *ngIf="isAdmin" class="admin-actions">
+      &gt; <a (click)="editCourse()" class="admin-link">Uredi</a>
+      &gt; <a (click)="deleteCourse()" class="admin-link delete">Obriši</a>
+    </span>
   </nav>
 
   <!-- Glavni sadržaj kursa -->
@@ -32,9 +38,51 @@
         </div>
       </div>
 
-      <div class="action-buttons">
-        <button class="btn-enroll">Dodaj u korpu - 49.99€</button>
-        <button class="btn-wishlist">❤️ Sačuvaj za kasnije</button>
+      <!-- Sekcija za kupovinu -->
+      <div class="purchase-section" *ngIf="currentUser && !isPurchased">
+        <h3>Kupi Kurs</h3>
+        <p class="price">Cena: {{ course.price ? (course.price + '€') : 'Besplatno' }}</p>
+        <p class="balance">Tvoj balans: {{ userBalance }}€</p>
+        
+        <div class="purchase-actions">
+          <button 
+            class="btn-enroll" 
+            (click)="purchaseCourse()"
+            [disabled]="isPurchasing || (course.price > 0 && userBalance < course.price)"
+          >
+            <span *ngIf="!isPurchasing">🛒 Kupi odmah</span>
+            <span *ngIf="isPurchasing">⏳ Obrada...</span>
+          </button>
+          
+          <button 
+            class="btn-wishlist"
+            (click)="toggleSaveCourse()"
+          >
+            <span *ngIf="!isSaved">❤️ Sačuvaj za kasnije</span>
+            <span *ngIf="isSaved">❌ Ukloni iz sačuvanih</span>
+          </button>
+        </div>
+
+        <div *ngIf="course.price > 0 && userBalance < course.price" class="insufficient-funds">
+          <p>Nemaš dovoljno sredstava! Trenutni balans: {{ userBalance }}€</p>
+          <div class="add-funds">
+            <button (click)="addFunds(10)">+10€</button>
+            <button (click)="addFunds(20)">+20€</button>
+            <button (click)="addFunds(50)">+50€</button>
+            <button (click)="goToWallet()" class="btn-wallet">💰 Upravljaj novčanikom</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isPurchased" class="purchased-info">
+        <h3>✅ Već ste kupili ovaj kurs</h3>
+        <p>Možete pristupti sadržaju kursa odmah.</p>
+      </div>
+
+      <div *ngIf="!currentUser" class="login-required">
+        <h3>⚠️ Potrebna prijava</h3>
+        <p>Morate biti prijavljeni da biste kupili ili sačuvali ovaj kurs.</p>
+        <a routerLink="/login" class="btn-enroll">Prijavi se</a>
       </div>
     </div>
 
@@ -131,7 +179,23 @@
 </div>
 
 <!-- Loading state -->
-<div *ngIf="!course" class="loading-container">
+<div *ngIf="isLoading" class="loading-container">
   <div class="loading-spinner"></div>
   <p>Učitavanje detalja kursa...</p>
 </div>
+
+<!-- Error state -->
+<div *ngIf="!course && !isLoading" class="error-container">
+  <h2>😕 Kurs nije pronađen</h2>
+  <p>Traženi kurs ne postoji ili nije dostupan.</p>
+  <a routerLink="/courses" class="btn-primary">Vrati se na kurseve</a>
+</div>
+
+ <div *ngIf="isAdmin" class="admin-info">
+    <h4>🔧 Admin Mode</h4>
+    <p>Vi imate administratorske privilegije za uređivanje kurseva.</p>
+    <div class="admin-buttons">
+      <button (click)="editCourse()" class="btn-edit">✏️ Uredi Kurs</button>
+      <button (click)="deleteCourse()" class="btn-delete">🗑️ Obriši Kurs</button>
+    </div>
+  </div>
