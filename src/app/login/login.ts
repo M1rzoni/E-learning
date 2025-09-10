@@ -49,7 +49,6 @@ export class LoginComponent {
             this.success = response.message;
             this.error = '';
             
-            // Spremi korisnika u localStorage i preusmjeri
             localStorage.setItem('currentUser', JSON.stringify(response.user));
             this.router.navigate(['/home']);
           } else {
@@ -108,7 +107,6 @@ export class LoginComponent {
           if (response.success) {
             this.success = response.message;
             this.error = '';
-            // Automatski prijavi korisnika nakon registracije
             this.login();
           } else {
             this.error = response.message || 'Greška pri registraciji';

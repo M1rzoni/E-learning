@@ -17,22 +17,20 @@ export class CoursesListComponent implements OnInit {
   isUpdating = false;
   expandedCategories: Set<string> = new Set();
   currentUser: any;
-  isAdmin: boolean = false; // Dodato
+  isAdmin: boolean = false; 
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    // Uzmi trenutnog korisnika
     const userData = localStorage.getItem('currentUser');
     if (userData) {
       this.currentUser = JSON.parse(userData);
-      this.isAdmin = this.currentUser.role === 'admin'; // Provera admin role
+      this.isAdmin = this.currentUser.role === 'admin'; 
     }
     
     this.loadCourses();
   }
 
-  // Pomocna funkcija za ikone kategorija
   getCategoryIcon(category: string): string {
     const icons: { [key: string]: string } = {
       'Frontend': '💻',
@@ -45,7 +43,7 @@ export class CoursesListComponent implements OnInit {
     return icons[category] || '📚';
   }
 
-  // Upravljanje prikazom kategorija
+
   toggleCategory(category: string) {
     if (this.expandedCategories.has(category)) {
       this.expandedCategories.delete(category);
@@ -58,7 +56,6 @@ export class CoursesListComponent implements OnInit {
     return this.expandedCategories.has(category);
   }
 
-  // Rukovanje greškama slika
   handleImageError(event: any) {
     event.target.style.display = 'none';
     const parent = event.target.parentElement;
@@ -78,13 +75,13 @@ export class CoursesListComponent implements OnInit {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validacija slike
+    
     if (!file.type.startsWith('image/')) {
       alert('Molimo izaberite isključivo sliku.');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file.size > 5 * 1024 * 1024) { //5mb je limit
       alert('Slika je prevelika. Maksimalna veličina je 5MB.');
       return;
     }
@@ -105,7 +102,6 @@ export class CoursesListComponent implements OnInit {
     );
   }
 
-  // Grupisanje kurseva po kategoriji
   getGroupedCourses() {
     const grouped: { [key: string]: any[] } = {};
 
@@ -151,7 +147,6 @@ export class CoursesListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.courses = data;
-          // Automatski proširi sve kategorije prvi put
           if (this.expandedCategories.size === 0) {
             Object.keys(this.getGroupedCourses()).forEach(category => {
               this.expandedCategories.add(category);

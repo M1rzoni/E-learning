@@ -75,7 +75,7 @@ export class WalletComponent implements OnInit {
         if (response.success) {
           alert(`Uspešno ste dodali ${this.addAmount}€ na novčanik!`);
           this.addAmount = 0;
-          this.loadWalletData(); // Osveži podatke
+          this.loadWalletData(); 
         } else {
           this.errorMessage = response.message || 'Greška pri dodavanju sredstava';
           alert('Greška: ' + response.message);

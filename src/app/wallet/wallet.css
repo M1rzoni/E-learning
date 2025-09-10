@@ -201,7 +201,7 @@
   background: #2563eb;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   .wallet-container {
     padding: 15px;

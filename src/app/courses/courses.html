@@ -4,7 +4,6 @@
     <h1 class="page-title">📚 Svi Kursevi</h1>
     
     <div class="header-actions">
-      <!-- Dodaj kurs dugme - samo za admina -->
       <a *ngIf="isAdmin" routerLink="/add-courses" class="btn-add-course">
         <span class="btn-icon">➕</span>
         Dodaj Novi Kurs
@@ -12,7 +11,7 @@
       
       <button class="btn-refresh" (click)="loadCourses()">
         <span class="btn-icon">🔄</span>
-        Osveži
+        Osvježi
       </button>
     </div>
   </div>

@@ -21,8 +21,7 @@ export class CourseDetailComponent implements OnInit {
   isSaved: boolean = false;
   isLoading: boolean = true;
   isPurchasing: boolean = false;
-  isAdmin: boolean = false; // Dodato
-
+  isAdmin: boolean = false; 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -33,11 +32,11 @@ export class CourseDetailComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     
-    // Uzmi trenutnog korisnika iz localStorage
+    
     const userData = localStorage.getItem('currentUser');
     if (userData) {
       this.currentUser = JSON.parse(userData);
-      this.isAdmin = this.currentUser.role === 'admin'; // Provera admin role
+      this.isAdmin = this.currentUser.role === 'admin'; 
       this.getUserBalance();
       this.checkIfPurchased();
       this.checkIfSaved();
@@ -111,7 +110,7 @@ export class CourseDetailComponent implements OnInit {
           if (response.success) {
             alert('Kurs uspešno kupljen! ' + (response.email_sent ? 'Email potvrda je poslata.' : ''));
             this.isPurchased = true;
-            this.getUserBalance(); // Osveži balans
+            this.getUserBalance(); 
           } else {
             alert('Greška: ' + response.message);
           }
@@ -169,7 +168,7 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
-  // Dodajte metodu za brisanje kursa (samo za admina)
+  
   deleteCourse() {
     if (this.isAdmin && confirm('Jeste li sigurni da želite obrisati ovaj kurs?')) {
       this.http.post('http://localhost/eucenje-backend/delete-course.php', { id: this.course.id })
@@ -197,7 +196,7 @@ export class CourseDetailComponent implements OnInit {
           this.isLoading = false;
           if (response.success) {
             alert('Sredstva uspešno dodata!');
-            this.getUserBalance(); // Osveži balans
+            this.getUserBalance(); 
           } else {
             alert('Greška: ' + response.message);
           }

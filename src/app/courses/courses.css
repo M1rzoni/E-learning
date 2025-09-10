@@ -1,4 +1,4 @@
-/* Main container */
+
 .course-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -10,7 +10,7 @@
   min-height: 100vh;
 }
 
-/* Page Header */
+
 .page-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -41,7 +41,7 @@
   flex-wrap: wrap;
 }
 
-/* Buttons */
+
 .btn-add-course,
 .btn-refresh {
   padding: 1rem 2rem;
@@ -78,7 +78,7 @@
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
 }
 
-/* Loading State */
+
 .loading-state {
   text-align: center;
   padding: 4rem;
@@ -100,7 +100,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: 4rem;
@@ -124,7 +124,7 @@
   margin-bottom: 2rem;
 }
 
-/* Category Section */
+
 .category-section {
   background: white;
   border-radius: 20px;
@@ -183,7 +183,7 @@
   transform: translateY(-1px);
 }
 
-/* Courses Grid */
+
 .courses-grid {
   padding: 2rem;
   display: grid;
@@ -191,7 +191,7 @@
   gap: 2rem;
 }
 
-/* Course Card */
+
 .course-card {
   background: white;
   border-radius: 16px;
@@ -206,7 +206,7 @@
   box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Course Image */
+
 .course-image-container {
   position: relative;
   height: 200px;
@@ -253,7 +253,7 @@
 .level-srednji { background: #f59e0b; }
 .level-napredni { background: #ef4444; }
 
-/* Course Content */
+
 .course-content {
   padding: 1.5rem;
 }
@@ -285,7 +285,7 @@
   overflow: hidden;
 }
 
-/* Course Meta */
+
 .course-meta {
   display: flex;
   gap: 1.5rem;
@@ -311,7 +311,7 @@
   font-weight: 500;
 }
 
-/* Course Actions */
+
 .course-actions {
   display: flex;
   gap: 0.75rem;
@@ -362,7 +362,7 @@
   transform: translateY(-1px);
 }
 
-/* Image Upload */
+
 .image-upload-section {
   margin-top: 1rem;
   padding-top: 1rem;
@@ -395,7 +395,7 @@
   font-size: 1rem;
 }
 
-/* Edit Modal */
+
 .edit-modal {
   position: fixed;
   top: 0;
@@ -455,7 +455,7 @@
   color: #374151;
 }
 
-/* Edit Form */
+
 .edit-form {
   padding: 2rem;
 }
@@ -511,7 +511,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Actions */
+
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -571,7 +571,7 @@
   animation: spin 1s linear infinite;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .courses-grid {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -635,7 +635,7 @@
   }
 }
 
-/* Utility Classes */
+
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -648,7 +648,7 @@
   justify-content: center;
 }
 
-/* Error Handling */
+
 .image-error {
   background: #fef2f2;
   color: #ef4444;
@@ -658,7 +658,7 @@
   font-size: 0.875rem;
 }
 
-/* Category Icons */
+
 .category-icon-frontend { color: #3b82f6; }
 .category-icon-backend { color: #10b981; }
 .category-icon-dizajn { color: #f59e0b; }

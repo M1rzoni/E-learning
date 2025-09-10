@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.courses = data;
-          this.featuredCourses = data.slice(0, 6); // Prvih 6 kurseva kao featured
+          this.featuredCourses = data.slice(0, 6); 
         },
         error: (error) => {
           console.error('Greška pri učitavanju kurseva:', error);
