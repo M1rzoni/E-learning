@@ -56,16 +56,9 @@ export class CoursesListComponent implements OnInit {
     return this.expandedCategories.has(category);
   }
 
-  handleImageError(event: any) {
-    event.target.style.display = 'none';
-    const parent = event.target.parentElement;
-    if (parent) {
-      const placeholder = parent.querySelector('.course-image-placeholder');
-      if (placeholder) {
-        placeholder.style.display = 'flex';
-      }
-    }
-  }
+handleImageError(event: any) {
+  event.target.src = 'http://localhost/eucenje-backend/images/courses/default-course-image.png';
+}
 
   editCourse(course: any) {
     this.selectedCourse = { ...course };

@@ -50,6 +50,106 @@
   font-size: 0.95rem;
 }
 
+/* Stilovi za upload slike */
+.image-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.image-preview {
+  position: relative;
+  width: 200px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-remove-image:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.upload-area {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  border: 2px dashed #d1d7dc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  background: #fafafa;
+}
+
+.upload-label:hover {
+  border-color: #5624d0;
+  background: #f8f6ff;
+}
+
+.upload-label.has-image {
+  padding: 20px;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.upload-text {
+  font-weight: 600;
+  color: #5624d0;
+  margin-bottom: 5px;
+}
+
+.upload-hint {
+  font-size: 0.8rem;
+  color: #6a6f73;
+}
+
+.file-input:disabled + .upload-label {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ostali stilovi ostaju isti... */
 .form-input,
 .form-select,
 .form-textarea {
@@ -269,5 +369,11 @@
   .btn-secondary {
     width: 100%;
     justify-content: center;
+  }
+  
+  .image-preview {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
   }
 }

@@ -1,15 +1,13 @@
 <div class="wallet-container">
   <h2>💰 Moj Novčanik</h2>
 
-   <div *ngIf="errorMessage" class="error-message">
+  <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
   <div class="wallet-balance">
     <h3>Trenutni balans: <span class="balance-amount">{{ balance }}€</span></h3>
   </div>
-
-  
 
   <div class="add-funds-section">
     <h3>Dodaj sredstva</h3>
@@ -27,9 +25,9 @@
     </div>
     
     <div class="quick-add-buttons">
-      <button (click)="addAmount = 10">+10€</button>
-      <button (click)="addAmount = 20">+20€</button>
-      <button (click)="addAmount = 50">+50€</button>
+      <button (click)="quickAdd(10)">+10€</button>
+      <button (click)="quickAdd(20)">+20€</button>
+      <button (click)="quickAdd(50)">+50€</button>
     </div>
   </div>
 
@@ -43,18 +41,15 @@
     <div *ngFor="let transaction of transactions" class="transaction-item">
       <div class="transaction-info">
         <span class="transaction-type">{{ getTransactionType(transaction.type) }}</span>
-        <span class="transaction-amount" [class.positive]="transaction.type === 'deposit'" 
-              [class.negative]="transaction.type === 'purchase' || transaction.type === 'refund'">
+        <span class="transaction-amount" 
+              [class.positive]="transaction.type === 'deposit'" 
+              [class.negative]="transaction.type === 'purchase'">
           {{ transaction.type === 'deposit' ? '+' : '-' }}{{ transaction.amount }}€
         </span>
       </div>
       <div class="transaction-details">
         <span class="transaction-date">{{ formatDate(transaction.created_at) }}</span>
         <span *ngIf="transaction.course_title" class="course-name">{{ transaction.course_title }}</span>
-        <span *ngIf="transaction.status" class="transaction-status" [class.completed]="transaction.status === 'completed'"
-              [class.pending]="transaction.status === 'pending'" [class.failed]="transaction.status === 'failed'">
-          {{ transaction.status }}
-        </span>
       </div>
     </div>
   </div>

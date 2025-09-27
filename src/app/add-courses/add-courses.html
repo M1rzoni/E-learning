@@ -7,7 +7,36 @@
     </div>
 
     <!-- Forma -->
-    <form (ngSubmit)="addCourse()" class="course-form">
+    <form (ngSubmit)="addCourse()" class="course-form" enctype="multipart/form-data">
+      <!-- Slika kursa -->
+      <div class="form-group">
+        <label for="image" class="form-label">Slika kursa</label>
+        <div class="image-upload-container">
+          <div class="image-preview" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="Preview slike kursa" class="preview-image">
+            <button type="button" class="btn-remove-image" (click)="removeImage()">×</button>
+          </div>
+          
+          <div class="upload-area" [class.has-image]="imagePreview">
+            <input 
+              type="file" 
+              id="image"
+              (change)="onImageSelected($event)"
+              accept="image/jpeg,image/png,image/jpg"
+              class="file-input"
+              [disabled]="isLoading"
+            >
+            <label for="image" class="upload-label">
+              <span class="upload-icon">📷</span>
+              <span class="upload-text">
+                {{ imagePreview ? 'Promeni sliku' : 'Dodaj sliku kursa' }}
+              </span>
+              <span class="upload-hint">JPG, PNG (max 5MB)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="title" class="form-label">Naziv kursa *</label>
         <input 
@@ -75,7 +104,7 @@
       </div>
 
       <div class="form-group">
-        <label for="price" class="form-label">Cena (€)</label>
+        <label for="price" class="form-label">Cijena (€)</label>
         <input 
           type="number" 
           id="price"
@@ -128,7 +157,12 @@
 
   <!-- Sidebar sa uputstvima -->
   <div class="guidance-sidebar">
-    <h3>💡 Saveti za dobar kurs</h3>
+    <h3>💡 Savjeti za dobar kurs</h3>
+    <div class="tip-card">
+      <h4>Slika kursa</h4>
+      <p>Odaberite privlačnu sliku koja predstavlja temu kursa. Preporučena rezolucija: 1280x720px.</p>
+    </div>
+    
     <div class="tip-card">
       <h4>Naslov kursa</h4>
       <p>Napišite jasan i privlačan naslov koji opisuje šta studenti mogu naučiti.</p>
@@ -142,11 +176,6 @@
     <div class="tip-card">
       <h4>Kategorija</h4>
       <p>Odaberite odgovarajuću kategoriju kako bi kurs bio lakše pronađen.</p>
-    </div>
-    
-    <div class="tip-card">
-      <h4>Nivo težine</h4>
-      <p>Označite tačan nivo težine kako bi studenti znali šta da očekuju.</p>
     </div>
   </div>
 </div>

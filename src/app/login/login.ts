@@ -12,9 +12,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
-  email = '';
+ email = '';
   password = '';
   name = '';
+  role = 'student'; 
   error = '';
   success = '';
   isLoginMode = true;
@@ -29,6 +30,7 @@ export class LoginComponent {
     this.email = '';
     this.password = '';
     this.name = '';
+    this.role = 'student'; 
   }
 
   login() {
@@ -50,7 +52,13 @@ export class LoginComponent {
             this.error = '';
             
             localStorage.setItem('currentUser', JSON.stringify(response.user));
-            this.router.navigate(['/home']);
+
+
+          if (response.user.role === 'admin') {
+              this.router.navigate(['/admin/users']);
+            } else {
+              this.router.navigate(['/home']);
+            }
           } else {
             this.error = response.message || 'Pogrešni podaci za prijavu';
             this.success = '';
@@ -97,7 +105,8 @@ export class LoginComponent {
     const body = {
       name: this.name,
       email: this.email,
-      password: this.password
+      password: this.password,
+      role: this.role
     };
 
     this.http.post<any>('http://localhost/eucenje-backend/register.php', body)

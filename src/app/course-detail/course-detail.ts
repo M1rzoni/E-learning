@@ -14,6 +14,7 @@ import { WalletService } from '../wallet';
   styleUrls: ['./course-detail.css']
 })
 export class CourseDetailComponent implements OnInit {
+  coursePrice: number = 0;
   course: any;
   currentUser: any;
   userBalance: number = 0;
@@ -30,7 +31,8 @@ export class CourseDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
+     const id = this.route.snapshot.paramMap.get('id');
+      console.log('Course ID:', id);
     
     
     const userData = localStorage.getItem('currentUser');
@@ -42,17 +44,29 @@ export class CourseDetailComponent implements OnInit {
       this.checkIfSaved();
     }
 
-    this.http.get(`http://localhost/eucenje-backend/get-course.php?id=${id}`)
-      .subscribe({
-        next: (data: any) => {
-          this.course = data;
+     this.http.get(`http://localhost/eucenje-backend/get-course.php?id=${id}`)
+    .subscribe({
+      next: (data: any) => {
+         this.course = data;
+          this.coursePrice = parseFloat(data.price) || 0;
           this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Greška pri učitavanju kursa:', error);
-          this.isLoading = false;
-        }
-      });
+        
+        // DEBUG
+           console.log('=== DETALJNI DEBUG ===');
+        console.log('Cijeli odgovor:', data);
+        console.log('Sva polja kursa:', Object.keys(data));
+        console.log('Image path from API:', data.image);
+        console.log('Has image property:', data.hasOwnProperty('image'));
+        console.log('Full URL:', this.getImageUrl(data.image));
+        console.log('==============');
+        
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Greška pri učitavanju kursa:', error);
+        this.isLoading = false;
+      }
+    });
   }
 
   getUserBalance() {
@@ -100,6 +114,12 @@ export class CourseDetailComponent implements OnInit {
       return;
     }
 
+    // Dodatna provjera na frontendu
+    if (this.coursePrice > 0 && this.userBalance < this.coursePrice) {
+      alert('Nemate dovoljno sredstava na računu!');
+      return;
+    }
+
     this.isPurchasing = true;
     const courseId = this.route.snapshot.paramMap.get('id');
 
@@ -110,7 +130,7 @@ export class CourseDetailComponent implements OnInit {
           if (response.success) {
             alert('Kurs uspešno kupljen! ' + (response.email_sent ? 'Email potvrda je poslata.' : ''));
             this.isPurchased = true;
-            this.getUserBalance(); 
+            this.getUserBalance(); // Refresh balans
           } else {
             alert('Greška: ' + response.message);
           }
@@ -119,6 +139,29 @@ export class CourseDetailComponent implements OnInit {
           this.isPurchasing = false;
           alert('Greška pri kupovini kursa');
           console.error('Purchase error:', error);
+        }
+      });
+  }
+
+    quickAddFunds(amount: number) {
+    if (!this.currentUser) return;
+    
+    this.isLoading = true;
+    this.walletService.addFunds(this.currentUser.id, amount)
+      .subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          if (response.success) {
+            alert(`Uspešno ste dodali ${amount}€ na novčanik!`);
+            this.getUserBalance(); // Refresh balans
+          } else {
+            alert('Greška: ' + response.message);
+          }
+        },
+        error: (error: any) => {
+          this.isLoading = false;
+          alert('Greška pri dodavanju sredstava');
+          console.error('Add funds error:', error);
         }
       });
   }
@@ -186,6 +229,33 @@ export class CourseDetailComponent implements OnInit {
         });
     }
   }
+
+  handleImageError(event: any) {
+  event.target.src = 'http://localhost/eucenje-backend/course_images/default-course-image.png';
+}
+getImageUrl(imagePath: string): string {
+  if (!imagePath) {
+    return 'http://localhost/eucenje-backend/course_images/default-course-image.png';
+  }
+  
+  // Ako putanja već ima pun URL
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // Ako putanja počinje sa 'course_images/'
+  if (imagePath.startsWith('course_images/')) {
+    return 'http://localhost/eucenje-backend/' + imagePath;
+  }
+  
+  // Ako je samo naziv fajla (npr: "68d58b0b4ab55_1788817033.png")
+  if (imagePath.includes('.')) {
+    return 'http://localhost/eucenje-backend/course_images/' + imagePath;
+  }
+  
+  // Default fallback
+  return 'http://localhost/eucenje-backend/course_images/default-course-image.png';
+}
 
 
   addFunds(amount: number) {

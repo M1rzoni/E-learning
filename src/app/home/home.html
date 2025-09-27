@@ -1,21 +1,18 @@
 <!-- Navigation Bar -->
-<a routerLink="/wallet" class="nav-link">
-  💰 Novčanik
-</a>
-
+<a routerLink="/wallet" class="nav-link"> 💰 Novčanik </a>
 <nav class="navbar">
   <div class="nav-container">
     <div class="nav-logo">
       <h2>E-Učenje</h2>
     </div>
-    
     <div class="nav-menu">
       <a routerLink="/home" class="nav-link active">Početna</a>
       <a routerLink="/courses" class="nav-link">Kursevi</a>
       <a routerLink="/add-courses" class="nav-link">Dodaj Kurs</a>
+      <a *ngIf="isAdmin()" routerLink="/admin/users" class="nav-link">👑 Admin Panel</a>
     </div>
-    
     <div class="nav-user">
+      <a routerLink="/wallet" class="nav-link wallet-link">💰 Novčanik</a>
       <div class="user-dropdown">
         <span class="user-name">👤 {{ currentUser?.name || 'Korisnik' }}</span>
         <div class="dropdown-content">
@@ -25,6 +22,38 @@
     </div>
   </div>
 </nav>
+
+<!-- Search and Filter Section -->
+<section class="search-section">
+  <div class="container">
+    <div class="search-filter-container">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="Pretraži kurseve..." 
+          [(ngModel)]="searchTerm"
+          (input)="filterCourses()"
+        >
+        <span class="search-icon">🔍</span>
+      </div>
+      
+      <div class="filter-controls">
+        <select [(ngModel)]="selectedCategory" (change)="filterCourses()">
+          <option value="">Sve kategorije</option>
+          <option *ngFor="let category of categories" [value]="category.name">
+            {{ category.name }}
+          </option>
+        </select>
+        
+        <select [(ngModel)]="sortOption" (change)="filterCourses()">
+          <option value="newest">Najnovije</option>
+          <option value="oldest">Najstarije</option>
+          <option value="title">Po naslovu (A-Ž)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Hero Section -->
 <section class="hero">
@@ -45,12 +74,19 @@
     <div class="courses-grid">
       <div *ngFor="let course of featuredCourses" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-          <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
-          <div *ngIf="!course.image" class="course-image-placeholder">📚</div>
+          <!-- Ažuriran prikaz slike -->
+ <img 
+  *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
+  [src]="'http://localhost/eucenje-backend/' + course.image" 
+  alt="{{ course.title }}"
+  onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+<div 
+  *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" 
+  class="course-image-placeholder">📚</div>
         </div>
         <div class="course-content">
           <h3>{{ course.title }}</h3>
-          <p class="course-description">{{ course.description  }}</p>
+          <p class="course-description">{{ course.description }}</p>
           <div class="course-meta">
             <span class="course-category">{{ course.category }}</span>
             <span class="course-rating">⭐ 4.8</span>
@@ -86,8 +122,13 @@
     <div class="courses-grid">
       <div *ngFor="let course of getCoursesByCategory(category.name)" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-          <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
-          <div *ngIf="!course.image" class="course-image-placeholder">📚</div>
+          <!-- Ažuriran prikaz slike -->
+          <img *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
+               [src]="'http://localhost/eucenje-backend/' + course.image" 
+               alt="{{ course.title }}"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+          <div *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" 
+               class="course-image-placeholder">📚</div>
         </div>
         <div class="course-content">
           <h3>{{ course.title }}</h3>

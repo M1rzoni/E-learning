@@ -54,16 +54,16 @@
 
         
         <div class="course-image-container">
-          <img 
-            *ngIf="course.image" 
-            [src]="'http://localhost/eucenje-backend/' + course.image" 
-            [alt]="course.title"
-            class="course-image"
-            (error)="handleImageError($event)"
-          />
-          <div *ngIf="!course.image" class="course-image-placeholder">
-            <span class="placeholder-icon">📚</span>
-          </div>
+  <img 
+    *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
+    [src]="'http://localhost/eucenje-backend/' + course.image" 
+    [alt]="course.title"
+    class="course-image"
+    (error)="handleImageError($event)"
+  />
+  <div *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" class="course-image-placeholder">
+    <span class="placeholder-icon">📚</span>
+  </div>
           
           <!-- Course Level Badge -->
           <div class="course-level-badge" [class]="'level-' + (course.level?.toLowerCase() || 'pocetni')">
@@ -132,7 +132,7 @@
                 class="file-input"
               />
               <span class="upload-icon">📷</span>
-              Promeni sliku
+              Promijeni sliku
             </label>
           </div>
         </div>
@@ -214,7 +214,7 @@
           </div>
 
           <div class="form-group">
-            <label for="edit-price" class="form-label">Cena (€)</label>
+            <label for="edit-price" class="form-label">Cijena (€)</label>
             <input 
               type="number" 
               id="edit-price"
@@ -229,18 +229,22 @@
         </div>
 
         <!-- Current Image -->
-        <div class="form-group" *ngIf="selectedCourse.image">
-          <label class="form-label">Trenutna Slika</label>
-          <img 
-            [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" 
-            class="current-image"
-            (error)="handleImageError($event)"
-          />
-        </div>
+      <div class="form-group" *ngIf="selectedCourse.image">
+  <label class="form-label">Trenutna Slika</label>
+  <img 
+    *ngIf="selectedCourse.image && selectedCourse.image !== 'images/courses/default-course-image.png'"
+    [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" 
+    class="current-image"
+    (error)="handleImageError($event)"
+  />
+  <div *ngIf="!selectedCourse.image || selectedCourse.image === 'images/courses/default-course-image.png'" class="course-image-placeholder">
+    <span class="placeholder-icon">📚</span>
+  </div>
+</div>
 
         <!-- Image Upload for Edit -->
         <div class="form-group">
-          <label class="form-label">Promeni Sliku</label>
+          <label class="form-label">Promijeni Sliku</label>
           <label class="file-upload-label">
             <input 
               type="file" 
@@ -263,7 +267,7 @@
           >
             <span class="btn-icon" *ngIf="!isUpdating">💾</span>
             <span class="btn-spinner" *ngIf="isUpdating"></span>
-            {{ isUpdating ? 'Čuvanje...' : 'Sačuvaj Promene' }}
+            {{ isUpdating ? 'Čuvanje...' : 'Sačuvaj Promjene' }}
           </button>
           
           <button 

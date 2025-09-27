@@ -22,6 +22,15 @@
       <small *ngIf="!isLoginMode" style="color: #666;">Lozinka mora imati najmanje 6 karaktera</small>
     </div>
 
+ <div *ngIf="!isLoginMode" class="form-group">
+      <label>Uloga:</label>
+      <select [(ngModel)]="role" name="role" class="form-control" [disabled]="isLoading">
+        <option value="student">Student</option>
+        <option value="predavač">Predavač</option>
+        <option value="admin">Administrator</option>
+      </select>
+    </div>
+
     <button type="submit" class="btn-primary" [disabled]="isLoading">
       {{ isLoginMode ? 'Prijavi se' : 'Registruj se' }}
     </button>

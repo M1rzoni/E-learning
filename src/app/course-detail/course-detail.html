@@ -13,164 +13,208 @@
   </nav>
 
   <!-- Glavni sadržaj kursa -->
-  <div class="course-header">
-    <div class="course-info">
-      <h1>{{ course.title }}</h1>
-      <p class="course-description">{{ course.description }}</p>
-      
-      <div class="course-meta">
-        <span class="category-badge">{{ course.category }}</span>
-        <div class="rating">
-          <span class="stars">⭐️⭐️⭐️⭐️⭐️</span>
-          <span class="rating-text">4.8 (256 recenzija)</span>
+  <div class="course-main-content">
+    <!-- Slika kursa i osnovne informacije -->
+    <div class="course-hero">
+      <div class="course-image-section">
+        <div class="course-image">
+          <img [src]="getImageUrl(course?.image)" 
+               (error)="handleImageError($event)"
+               alt="{{ course?.title }}"
+               class="course-main-image">
+          <div *ngIf="!course?.image" class="image-placeholder">
+            <span>📚</span>
+            <p>Nema slike kursa</p>
+          </div>
         </div>
-        <div class="students-count">
-          <span class="icon">👥</span>
-          <span>1,245 studenata</span>
-        </div>
-      </div>
-
-      <div class="instructor">
-        <div class="instructor-avatar">👨‍🏫</div>
-        <div class="instructor-info">
-          <h4>Predavač: Profesor Adis</h4>
-          <p>Senior developer sa 10+ godina iskustva</p>
-        </div>
-      </div>
-
-      <!-- Sekcija za kupovinu -->
-      <div class="purchase-section" *ngIf="currentUser && !isPurchased">
-        <h3>Kupi Kurs</h3>
-        <p class="price">Cijena: {{ course.price ? (course.price + '€') : 'Besplatno' }}</p>
-        <p class="balance">Tvoj balans: {{ userBalance }}€</p>
         
-        <div class="purchase-actions">
-          <button 
-            class="btn-enroll" 
-            (click)="purchaseCourse()"
-            [disabled]="isPurchasing || (course.price > 0 && userBalance < course.price)"
-          >
-            <span *ngIf="!isPurchasing">🛒 Kupi odmah</span>
-            <span *ngIf="isPurchasing">⏳ Obrada...</span>
-          </button>
+        <div class="course-highlights">
+          <div class="highlight">
+            <span class="icon">⏱️</span>
+            <span>10h video sadržaja</span>
+          </div>
+          <div class="highlight">
+            <span class="icon">💪</span>
+            <span>25 vježbi</span>
+          </div>
+          <div class="highlight">
+            <span class="icon">∞</span>
+            <span>Puni pristup zauvijek</span>
+          </div>
+          <div class="highlight">
+            <span class="icon">📱</span>
+            <span>Dostupno na svim uređajima</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-info-section">
+        <div class="course-basic-info">
+          <h1>{{ course.title }}</h1>
+          <p class="course-description">{{ course.description }}</p>
           
-          <button 
-            class="btn-wishlist"
-            (click)="toggleSaveCourse()"
-          >
-            <span *ngIf="!isSaved">❤️ Sačuvaj za kasnije</span>
-            <span *ngIf="isSaved">❌ Ukloni iz sačuvanih</span>
-          </button>
+          <div class="course-meta">
+            <span class="category-badge">{{ course.category }}</span>
+            <span class="level-badge">{{ course.level }}</span>
+            <div class="rating">
+              <span class="stars">⭐️⭐️⭐️⭐️⭐️</span>
+              <span class="rating-text">4.8 (256 recenzija)</span>
+            </div>
+            <div class="students-count">
+              <span class="icon">👥</span>
+              <span>1,245 studenata</span>
+            </div>
+          </div>
+
+          <div class="instructor">
+            <div class="instructor-avatar">👨‍🏫</div>
+            <div class="instructor-info">
+              <h4>Predavač: Profesor Adis</h4>
+              <p>Senior developer sa 10+ godina iskustva</p>
+            </div>
+          </div>
         </div>
 
-        <div *ngIf="course.price > 0 && userBalance < course.price" class="insufficient-funds">
-          <p>Nemaš dovoljno sredstava! Trenutni balans: {{ userBalance }}€</p>
-          <div class="add-funds">
-            <button (click)="addFunds(10)">+10€</button>
-            <button (click)="addFunds(20)">+20€</button>
-            <button (click)="addFunds(50)">+50€</button>
-            <button (click)="goToWallet()" class="btn-wallet">💰 Upravljaj novčanikom</button>
+        <!-- Sekcija za kupovinu -->
+        <div class="course-purchase-section">
+          <h3>Kupi Kurs</h3>
+          
+          <div class="price-section">
+            <h4>Cijena: 
+              <span *ngIf="course?.price > 0" class="course-price">{{ course?.price }}€</span>
+              <span *ngIf="course?.price === 0" class="course-price free">Besplatno</span>
+            </h4>
+            <p class="user-balance">Tvoj balans: {{ userBalance }}€</p>
+          </div>
+
+          <!-- Akcije za kupovinu -->
+          <div class="purchase-actions">
+            <!-- Besplatni kurs -->
+            <div *ngIf="course?.price === 0">
+              <button (click)="purchaseCourse()" 
+                      [disabled]="isPurchasing || isPurchased" 
+                      class="btn-purchase">
+                {{ isPurchasing ? 'U toku...' : (isPurchased ? 'Već kupljeno' : 'Enroll Besplatno') }}
+              </button>
+            </div>
+
+            <!-- Plaćeni kurs -->
+            <div *ngIf="course?.price > 0">
+              <!-- Već kupljeno -->
+              <div *ngIf="isPurchased" class="already-purchased">
+                <button class="btn-purchased" disabled>✅ Već kupljeno</button>
+              </div>
+
+              <!-- Nije kupljeno -->
+              <div *ngIf="!isPurchased">
+                <!-- Dovoljno sredstava -->
+                <div *ngIf="userBalance >= course?.price">
+                  <button (click)="purchaseCourse()" 
+                          [disabled]="isPurchasing" 
+                          class="btn-purchase">
+                    {{ isPurchasing ? 'Kupovina u toku...' : 'Kupi odmah - ' + course?.price + '€' }}
+                  </button>
+                </div>
+
+                <!-- Nema dovoljno sredstava -->
+                <div *ngIf="userBalance < course?.price" class="insufficient-funds">
+                  <div class="warning-message">
+                    ⚠️ Nemaš dovoljno sredstava! Trenutni balans: {{ userBalance }}€
+                  </div>
+                  <div class="quick-add-section">
+                    <p>Brzo dodaj sredstva:</p>
+                    <div class="quick-buttons">
+                      <button (click)="addFunds(10)" class="btn-quick-add">+10€</button>
+                      <button (click)="addFunds(20)" class="btn-quick-add">+20€</button>
+                      <button (click)="addFunds(50)" class="btn-quick-add">+50€</button>
+                    </div>
+                    <button (click)="goToWallet()" class="btn-wallet">👛 Upravljanje novčanikom</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sačuvaj za kasnije -->
+            <div class="save-action">
+              <button (click)="toggleSaveCourse()" 
+                      [class.saved]="isSaved"
+                      class="btn-save">
+                {{ isSaved ? '✅ Sačuvano' : '💾 Sačuvaj za kasnije' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div *ngIf="isPurchased" class="purchased-info">
-        <h3>✅ Već ste kupili ovaj kurs</h3>
-        <p>Možete pristupti sadržaju kursa odmah.</p>
+    <!-- Detalji i curriculum -->
+    <div class="course-content">
+      <div class="content-nav">
+        <button class="nav-btn active">Pregled</button>
+        <button class="nav-btn">Curriculum</button>
+        <button class="nav-btn">Recenzije</button>
+        <button class="nav-btn">Diskusije</button>
       </div>
 
-      <div *ngIf="!currentUser" class="login-required">
-        <h3>⚠️ Potrebna prijava</h3>
-        <p>Morate biti prijavljeni da biste kupili ili sačuvali ovaj kurs.</p>
-        <a routerLink="/login" class="btn-enroll">Prijavi se</a>
+      <div class="content-section">
+        <h3>Šta ćete naučiti</h3>
+        <ul class="learning-list">
+          <li>Savladati osnove {{ course.category }} razvoja</li>
+          <li>Napredne tehnike i najbolje prakse</li>
+          <li>Praktični projekti za portfolio</li>
+          <li>Priprema za posao u industriji</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h3>Za koga je ovaj kurs</h3>
+        <ul class="audience-list">
+          <li>Početnici koji žele da nauče {{ course.category }}</li>
+          <li>Srednje napredni koji žele da usavrše svoje veštine</li>
+          <li>Profesionalci koji žele da prošire svoje znanje</li>
+        </ul>
       </div>
     </div>
 
-    <div class="course-image">
-      <img *ngIf="course.image" [src]="'http://localhost/eucenje-backend/' + course.image" alt="{{ course.title }}">
-      <div *ngIf="!course.image" class="image-placeholder">
-        <span>📚</span>
-        <p>Slika kursa</p>
-      </div>
-      
-      <div class="course-highlights">
-        <div class="highlight">
-          <span class="icon">⏱️</span>
-          <span>10h video sadržaja</span>
-        </div>
-        <div class="highlight">
-          <span class="icon">📝</span>
-          <span>25 vježbi</span>
-        </div>
-        <div class="highlight">
-          <span class="icon">📅</span>
-          <span>Puni pristup zauvijek</span>
-        </div>
-        <div class="highlight">
-          <span class="icon">📱</span>
-          <span>Dostupno na svim uređajima</span>
-        </div>
+    <!-- Admin panel -->
+    <div *ngIf="isAdmin" class="admin-info">
+      <h4>🔧 Admin Mode</h4>
+      <p>Vi imate administratorske privilegije za uređivanje kurseva.</p>
+      <div class="admin-buttons">
+        <button (click)="editCourse()" class="btn-edit">✏️ Uredi Kurs</button>
+        <button (click)="deleteCourse()" class="btn-delete">🗑️ Obriši Kurs</button>
       </div>
     </div>
-  </div>
 
-  <!-- Detalji i curriculum -->
-  <div class="course-content">
-    <div class="content-nav">
-      <button class="nav-btn active">Pregled</button>
-      <button class="nav-btn">Curriculum</button>
-      <button class="nav-btn">Recenzije</button>
-      <button class="nav-btn">Diskusije</button>
-    </div>
-
-    <div class="content-section">
-      <h3>Šta ćete naučiti</h3>
-      <ul class="learning-list">
-        <li>✔️ Savladati osnove {{ course.category }} razvoja</li>
-        <li>✔️ Napredne tehnike i najbolje prakse</li>
-        <li>✔️ Praktični projekti za portfolio</li>
-        <li>✔️ Priprema za posao u industriji</li>
-      </ul>
-    </div>
-
-    <div class="content-section">
-      <h3>Za koga je ovaj kurs</h3>
-      <ul class="audience-list">
-        <li>• Početnici koji žele da nauče {{ course.category }}</li>
-        <li>• Srednje napredni koji žele da usavrše svoje veštine</li>
-        <li>• Profesionalci koji žele da prošire svoje znanje</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Preporučeni kursevi -->
-  <div class="related-courses">
-    <h2>Slični kursevi</h2>
-    <div class="courses-grid">
-      <div class="course-card">
-        <div class="card-image">
-          <div class="image-placeholder">💻</div>
-        </div>
-        <div class="card-content">
-          <h4>Napredni {{ course.category }} koncepti</h4>
-          <p class="card-description">Produbite svoje znanje sa naprednim temama</p>
-          <div class="card-meta">
-            <span class="card-category">{{ course.category }}</span>
-            <span class="card-price">59.99€</span>
+    <!-- Preporučeni kursevi -->
+    <div class="related-courses">
+      <h2>Slični kursevi</h2>
+      <div class="courses-grid">
+        <div class="course-card">
+          <div class="card-image">
+            <div class="image-placeholder">💻</div>
+          </div>
+          <div class="card-content">
+            <h4>Napredni {{ course.category }} koncepti</h4>
+            <p class="card-description">Produbite svoje znanje sa naprednim temama</p>
+            <div class="card-meta">
+              <span class="card-category">{{ course.category }}</span>
+              <span class="card-price">59.99€</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="course-card">
-        <div class="card-image">
-          <div class="image-placeholder">🚀</div>
-        </div>
-        <div class="card-content">
-          <h4>{{ course.category }} projekti za portfolio</h4>
-          <p class="card-description">Izgradite impresivan portfolio sa realnim projektima</p>
-          <div class="card-meta">
-            <span class="card-category">{{ course.category }}</span>
-            <span class="card-price">44.99€</span>
+        <div class="course-card">
+          <div class="card-image">
+            <div class="image-placeholder">🚀</div>
+          </div>
+          <div class="card-content">
+            <h4>{{ course.category }} projekti za portfolio</h4>
+            <p class="card-description">Izgradite impresivan portfolio sa realnim projektima</p>
+            <div class="card-meta">
+              <span class="card-category">{{ course.category }}</span>
+              <span class="card-price">44.99€</span>
+            </div>
           </div>
         </div>
       </div>
@@ -190,12 +234,3 @@
   <p>Traženi kurs ne postoji ili nije dostupan.</p>
   <a routerLink="/courses" class="btn-primary">Vrati se na kurseve</a>
 </div>
-
- <div *ngIf="isAdmin" class="admin-info">
-    <h4>🔧 Admin Mode</h4>
-    <p>Vi imate administratorske privilegije za uređivanje kurseva.</p>
-    <div class="admin-buttons">
-      <button (click)="editCourse()" class="btn-edit">✏️ Uredi Kurs</button>
-      <button (click)="deleteCourse()" class="btn-delete">🗑️ Obriši Kurs</button>
-    </div>
-  </div>
