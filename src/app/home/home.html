@@ -36,14 +36,14 @@
       </div>
       
       <div class="filter-controls">
-        <select [(ngModel)]="selectedCategory" (change)="filterCourses()">
+        <select title="selectedCategory" [(ngModel)]="selectedCategory" (change)="filterCourses()">
           <option value="">Sve kategorije</option>
           <option *ngFor="let category of categories" [value]="category.name">
             {{ category.name }}
           </option>
         </select>
         
-        <select [(ngModel)]="sortOption" (change)="filterCourses()">
+        <select title="sortOption" [(ngModel)]="sortOption" (change)="filterCourses()">
           <option value="newest">Najnovije</option>
           <option value="oldest">Najstarije</option>
           <option value="title">Po naslovu (A-Ž)</option>

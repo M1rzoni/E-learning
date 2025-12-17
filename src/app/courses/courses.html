@@ -1,5 +1,4 @@
 <div class="course-container">
-  <!-- Page Header -->
   <div class="page-header">
     <h1 class="page-title">📚 Svi Kursevi</h1>
     
@@ -16,13 +15,11 @@
     </div>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="courses.length === 0" class="loading-state">
     <div class="loading-spinner"></div>
     <p>Učitavanje kurseva...</p>
   </div>
 
-  <!-- No Courses State -->
   <div *ngIf="courses.length === 0" class="empty-state">
     <div class="empty-icon">📚</div>
     <h3>Nema dostupnih kurseva</h3>
@@ -33,7 +30,6 @@
     </a>
   </div>
 
-  <!-- Courses by Category -->
   <div *ngFor="let category of getGroupedCourses() | keyvalue" class="category-section">
     <div class="category-header">
       <h2 class="category-title">
@@ -50,11 +46,11 @@
 
     <div *ngIf="isCategoryExpanded(category.key)" class="courses-grid">
       <div *ngFor="let course of category.value" class="course-card">
-        <!-- Course Image -->
-
+  
         
         <div class="course-image-container">
   <img 
+    alt="image"
     *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
     [src]="'http://localhost/eucenje-backend/' + course.image" 
     [alt]="course.title"
@@ -64,14 +60,12 @@
   <div *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" class="course-image-placeholder">
     <span class="placeholder-icon">📚</span>
   </div>
-          
-          <!-- Course Level Badge -->
+    
           <div class="course-level-badge" [class]="'level-' + (course.level?.toLowerCase() || 'pocetni')">
             {{ course.level || 'Početni' }}
           </div>
         </div>
 
-        <!-- Course Content -->
         <div class="course-content">
           <h3 class="course-title">
             <a [routerLink]="['/course', course.id]" class="course-link">
@@ -83,7 +77,7 @@
             {{ course.description }}
           </p>
 
-          <!-- Course Meta -->
+    
           <div class="course-meta">
             <div class="meta-item">
               <span class="meta-icon">💰</span>
@@ -95,7 +89,7 @@
             </div>
           </div>
 
-          <!-- Course Actions -->
+         
           <div class="course-actions">
             <button 
               class="btn btn-view"
@@ -122,7 +116,7 @@
             </button>
           </div>
 
-          <!-- Image Upload -->
+       
           <div class="image-upload-section">
             <label class="file-upload-label">
               <input 
@@ -140,7 +134,7 @@
     </div>
   </div>
 
-  <!-- Edit Course Form -->
+ 
   <div *ngIf="selectedCourse" class="edit-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -228,10 +222,11 @@
           </div>
         </div>
 
-        <!-- Current Image -->
+      
       <div class="form-group" *ngIf="selectedCourse.image">
   <label class="form-label">Trenutna Slika</label>
-  <img 
+  <img
+    alt="image" 
     *ngIf="selectedCourse.image && selectedCourse.image !== 'images/courses/default-course-image.png'"
     [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" 
     class="current-image"
@@ -242,7 +237,7 @@
   </div>
 </div>
 
-        <!-- Image Upload for Edit -->
+        
         <div class="form-group">
           <label class="form-label">Promijeni Sliku</label>
           <label class="file-upload-label">
@@ -257,7 +252,7 @@
           </label>
         </div>
 
-        <!-- Form Actions -->
+    
         <div class="form-actions">
           <button 
             type="button" 

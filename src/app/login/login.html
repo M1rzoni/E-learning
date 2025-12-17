@@ -23,7 +23,7 @@
 
  <div *ngIf="!isLoginMode" class="form-group">
       <label>Uloga:</label>
-      <select [(ngModel)]="role" name="role" class="form-control" [disabled]="isLoading">
+      <select title="uloga" [(ngModel)]="role" name="role" class="form-control" [disabled]="isLoading">
         <option value="student">Student</option>
         <option value="predavač">Predavač</option>
         <option value="admin">Administrator</option>

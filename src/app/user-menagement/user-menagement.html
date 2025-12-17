@@ -2,14 +2,13 @@
   <h2>👑 Upravljanje korisnicima</h2>
   <p class="admin-info">Trenutno prijavljeni kao: <strong>{{ currentUser?.name }}</strong> ({{ currentUser?.role }})</p>
   
-  <!-- Kreiranje novog korisnika -->
   <div class="create-user-section">
     <h3>Kreiraj novog korisnika</h3>
     <div class="form-group">
       <input type="text" [(ngModel)]="newUser.name" placeholder="Ime i prezime" class="form-control">
       <input type="email" [(ngModel)]="newUser.email" placeholder="Email" class="form-control">
       <input type="password" [(ngModel)]="newUser.password" placeholder="Lozinka (min. 6 karaktera)" class="form-control">
-      <select [(ngModel)]="newUser.role" class="form-control">
+      <select title="newUser" [(ngModel)]="newUser.role" class="form-control">
         <option value="student">Student</option>
         <option value="predavač">Predavač</option>
         <option value="admin">Administrator</option>
@@ -66,15 +65,15 @@
       <h3>Uredi korisnika: {{ selectedUser.name }}</h3>
       <div class="form-group">
         <label>Ime i prezime:</label>
-        <input type="text" [(ngModel)]="selectedUser.name" class="form-control">
+        <input title="email" type="text" [(ngModel)]="selectedUser.name" class="form-control">
       </div>
       <div class="form-group">
         <label>Email:</label>
-        <input type="email" [(ngModel)]="selectedUser.email" class="form-control">
+        <input title="email" type="email" [(ngModel)]="selectedUser.email" class="form-control">
       </div>
       <div class="form-group">
         <label>Uloga:</label>
-        <select [(ngModel)]="selectedUser.role" class="form-control">
+        <select title="selectedUserRole" [(ngModel)]="selectedUser.role" class="form-control">
           <option value="student">Student</option>
           <option value="predavač">Predavač</option>
           <option value="admin">Administrator</option>
