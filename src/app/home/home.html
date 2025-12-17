@@ -1,4 +1,3 @@
-<!-- Navigation Bar -->
 <a routerLink="/wallet" class="nav-link"> 💰 Novčanik </a>
 <nav class="navbar">
   <div class="nav-container">
@@ -23,7 +22,6 @@
   </div>
 </nav>
 
-<!-- Search and Filter Section -->
 <section class="search-section">
   <div class="container">
     <div class="search-filter-container">
@@ -55,7 +53,6 @@
   </div>
 </section>
 
-<!-- Hero Section -->
 <section class="hero">
   <div class="hero-content">
     <h1>Unaprijedi svoje vještine danas</h1>
@@ -67,14 +64,13 @@
   </div>
 </section>
 
-<!-- Featured Courses -->
 <section class="featured-courses">
   <div class="container">
     <h2>Istaknuti Kursevi</h2>
     <div class="courses-grid">
       <div *ngFor="let course of featuredCourses" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-          <!-- Ažuriran prikaz slike -->
+      
  <img 
   *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
   [src]="'http://localhost/eucenje-backend/' + course.image" 
@@ -97,7 +93,6 @@
   </div>
 </section>
 
-<!-- Categories Section -->
 <section class="categories">
   <div class="container">
     <h2>Kategorije Kurseva</h2>
@@ -112,7 +107,6 @@
   </div>
 </section>
 
-<!-- Courses by Category -->
 <section *ngFor="let category of categories" class="category-section">
   <div class="container">
     <div class="section-header">
@@ -122,7 +116,7 @@
     <div class="courses-grid">
       <div *ngFor="let course of getCoursesByCategory(category.name)" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-          <!-- Ažuriran prikaz slike -->
+      
           <img *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
                [src]="'http://localhost/eucenje-backend/' + course.image" 
                alt="{{ course.title }}"
@@ -142,7 +136,6 @@
   </div>
 </section>
 
-<!-- Footer -->
 <footer class="footer">
   <div class="container">
     <p>&copy; 2025 E-Učenje Platforma. Sva prava zadržana.</p>

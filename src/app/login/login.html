@@ -2,7 +2,6 @@
   <h2>{{ isLoginMode ? 'Prijava' : 'Registracija' }}</h2>
   
   <form (ngSubmit)="onSubmit()" *ngIf="!isLoading; else loading">
-    <!-- Polje za ime (samo za registraciju) -->
     <div *ngIf="!isLoginMode" class="form-group">
       <label>Ime i prezime:</label>
       <input type="text" [(ngModel)]="name" name="name" required 

@@ -167,7 +167,6 @@ export class UserManagementComponent implements OnInit {
     this.selectedUser = null;
   }
 
-  // Sprečava adminu da deaktivira samog sebe
   canDeactivate(user: User): boolean {
     return user.id !== this.currentUser.id;
   }

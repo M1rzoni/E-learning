@@ -13,7 +13,6 @@
   font-weight: 700;
 }
 
-/* Wallet Balance */
 .wallet-balance {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   padding: 30px;
@@ -39,7 +38,6 @@
   margin-top: 10px;
 }
 
-/* Add Funds Section */
 .add-funds-section {
   background: white;
   padding: 25px;
@@ -126,7 +124,6 @@
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* Transaction History */
 .transaction-history {
   background: white;
   padding: 25px;

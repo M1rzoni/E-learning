@@ -17,14 +17,10 @@
       <button (click)="createUser()" class="btn-primary">Kreiraj korisnika</button>
     </div>
   </div>
-
-  <!-- Pretraga -->
   <div class="search-section">
     <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" 
            placeholder="Pretraži korisnike po imenu, emailu ili ulozi..." class="search-input">
   </div>
-
-  <!-- Tabela korisnika -->
   <div class="users-table">
     <table>
       <thead>
@@ -65,8 +61,6 @@
       </tbody>
     </table>
   </div>
-
-  <!-- Modal za uređivanje -->
   <div *ngIf="selectedUser" class="modal-overlay">
     <div class="modal-content">
       <h3>Uredi korisnika: {{ selectedUser.name }}</h3>

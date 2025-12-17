@@ -94,7 +94,7 @@ export class AddCourseComponent {
           this.isLoading = false;
           if (response.success) {
             this.message = '✅ Kurs uspješno dodat!';
-            console.log('Response:', response); // Dodajte za debug
+            console.log('Response:', response); 
             setTimeout(() => {
               this.clearForm();
             }, 2000);
