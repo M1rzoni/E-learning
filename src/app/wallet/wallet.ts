@@ -61,7 +61,6 @@ export class WalletComponent implements OnInit {
     });
   }
 
-  // ISPRAVLJENA addFunds FUNKCIJA
   addFunds() {
     if (this.addAmount <= 0) {
       alert('Molimo unesite validan iznos');
@@ -76,7 +75,7 @@ export class WalletComponent implements OnInit {
         if (response.success) {
           alert(`Uspešno ste dodali ${this.addAmount}€ na novčanik!`);
           this.addAmount = 0;
-          this.loadWalletData(); // Refresh podataka
+          this.loadWalletData();
         } else {
           this.errorMessage = response.message || 'Greška pri dodavanju sredstava';
           alert('Greška: ' + response.message);
@@ -92,7 +91,6 @@ export class WalletComponent implements OnInit {
     });
   }
 
-  // Brzo dodavanje sredstava
   quickAdd(amount: number) {
     this.addAmount = amount;
     this.addFunds();

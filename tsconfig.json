@@ -4,6 +4,11 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
+    "baseUrl": "./",
+    "moduleResolution": "bundler",
+    "paths": {
+      "tslib": ["node_modules/tslib/tslib.d.ts"]
+    },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -12,8 +17,8 @@
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "ES2022",
-    "module": "preserve"
+    "target": "es2022",
+    "module": "es2022"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
