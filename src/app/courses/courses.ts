@@ -110,13 +110,15 @@ handleImageError(event: any) {
   }
 
   updateCourse() {
-    if (!this.selectedCourse || this.isUpdating) return;
-    
-    this.isUpdating = true;
-    
-    this.http.post('http://localhost/eucenje-backend/update-course.php', this.selectedCourse)
-      .subscribe({
-        next: (response) => {
+  if (!this.selectedCourse || this.isUpdating) return;
+  
+  this.isUpdating = true;
+  
+  // PUT metoda za update
+  this.http.put(`http://localhost/eucenje-backend/courses.php?id=${this.selectedCourse.id}`, this.selectedCourse)
+    .subscribe({
+      next: (response: any) => {
+        if (response.success) {
           const courseIndex = this.courses.findIndex(c => c.id === this.selectedCourse.id);
           if (courseIndex !== -1) {
             this.courses[courseIndex] = { ...this.selectedCourse };
@@ -125,15 +127,19 @@ handleImageError(event: any) {
           alert('Kurs je ažuriran.');
           this.selectedCourse = null;
           this.isUpdating = false;
-          this.loadCourses(); 
-        },
-        error: (error) => {
-          alert('Greška pri ažuriranju kursa.');
-          console.error('Update error:', error);
+          this.loadCourses();
+        } else {
+          alert(response.message || 'Greška pri ažuriranju.');
           this.isUpdating = false;
         }
-      });
-  }
+      },
+      error: (error) => {
+        alert('Greška pri ažuriranju kursa.');
+        console.error('Update error:', error);
+        this.isUpdating = false;
+      }
+    });
+}
 
   loadCourses() {
     this.http.get<any[]>('http://localhost/eucenje-backend/courses.php')
