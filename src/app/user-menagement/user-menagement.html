@@ -1,7 +1,22 @@
 <div class="user-management-container">
+  <div class="admin-navigation">
+    <h2>👑 Admin Panel</h2>
+    <div class="nav-buttons">
+      <button class="nav-btn active">
+        👥 Korisnici
+      </button>
+      <button class="nav-btn" onclick="window.location.href='/courses'">
+        📚 Kursevi
+      </button>
+      <button class="nav-btn" onclick="window.location.href='/add-courses'">
+        ➕ Dodaj Kurs
+      </button>
+    </div>
+  </div>
+
   <h2>👑 Upravljanje korisnicima</h2>
   <p class="admin-info">Trenutno prijavljeni kao: <strong>{{ currentUser?.name }}</strong> ({{ currentUser?.role }})</p>
-  
+
   <div class="create-user-section">
     <h3>Kreiraj novog korisnika</h3>
     <div class="form-group">
@@ -16,10 +31,12 @@
       <button (click)="createUser()" class="btn-primary">Kreiraj korisnika</button>
     </div>
   </div>
+
   <div class="search-section">
     <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" 
            placeholder="Pretraži korisnike po imenu, emailu ili ulozi..." class="search-input">
   </div>
+
   <div class="users-table">
     <table>
       <thead>
@@ -60,12 +77,13 @@
       </tbody>
     </table>
   </div>
+
   <div *ngIf="selectedUser" class="modal-overlay">
     <div class="modal-content">
       <h3>Uredi korisnika: {{ selectedUser.name }}</h3>
       <div class="form-group">
         <label>Ime i prezime:</label>
-        <input title="email" type="text" [(ngModel)]="selectedUser.name" class="form-control">
+        <input title="name" type="text" [(ngModel)]="selectedUser.name" class="form-control">
       </div>
       <div class="form-group">
         <label>Email:</label>

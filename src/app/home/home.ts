@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit {
   }
 
   filterCourses() {
-    // Apply search filter
     let filtered = this.courses;
     
     if (this.searchTerm) {
@@ -64,14 +63,12 @@ export class HomeComponent implements OnInit {
       );
     }
     
-    // Apply category filter
     if (this.selectedCategory) {
       filtered = filtered.filter(course => 
         course.category === this.selectedCategory
       );
     }
     
-    // Apply sorting
     switch(this.sortOption) {
       case 'newest':
         filtered = filtered.sort((a, b) => b.id - a.id);
@@ -88,16 +85,33 @@ export class HomeComponent implements OnInit {
     this.featuredCourses = this.filteredCourses.slice(0, 6);
   }
 
-  logout() {
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+  getImageUrl(imageName: string): string {
+    if (!imageName || imageName === 'default-course-image.png' || imageName === 'default-course-image.jpg') {
+      return 'http://localhost/eucenje-backend/uploads/courses/default-course-image.png';
+    }
+    
+    return 'http://localhost/eucenje-backend/uploads/courses/' + imageName;
+  }
+
+  handleImageError(event: any): void {
+    const img = event.target;
+    img.style.display = 'none';
+    
+    const placeholder = img.nextElementSibling;
+    if (placeholder && placeholder.classList.contains('course-image-placeholder')) {
+      placeholder.style.display = 'block';
+    }
   }
 
   getCoursesByCategory(category: string) {
     return this.courses.filter(course => course.category === category).slice(0, 4);
   }
 
-  // Provjera da li je korisnik admin
+  logout() {
+    localStorage.removeItem('currentUser');
+    this.router.navigate(['/login']);
+  }
+
   isAdmin(): boolean {
     return this.currentUser && this.currentUser.role === 'admin';
   }

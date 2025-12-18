@@ -20,126 +20,118 @@
     <p>Učitavanje kurseva...</p>
   </div>
 
-  <div *ngIf="courses.length === 0" class="empty-state">
-    <div class="empty-icon">📚</div>
-    <h3>Nema dostupnih kurseva</h3>
-    <p>Još uvek nema kurseva. Budite prvi koji će dodati kurs!</p>
-    <a routerLink="/add-courses" class="btn-add-course">
-      <span class="btn-icon">➕</span>
-      Dodaj Prvi Kurs
-    </a>
-  </div>
-
-  <div *ngFor="let category of getGroupedCourses() | keyvalue" class="category-section">
-    <div class="category-header">
-      <h2 class="category-title">
-        <span class="category-icon">{{ getCategoryIcon(category.key) }}</span>
-        {{ category.key }}
-        <span class="course-count">({{ category.value.length }} kursa)</span>
-      </h2>
-      <div class="category-actions">
-        <button class="btn-collapse" (click)="toggleCategory(category.key)">
-          {{ isCategoryExpanded(category.key) ? 'Sakrij' : 'Prikaži' }}
-        </button>
-      </div>
-    </div>
-
-    <div *ngIf="isCategoryExpanded(category.key)" class="courses-grid">
-      <div *ngFor="let course of category.value" class="course-card">
-  
-        
-        <div class="course-image-container">
-  <img 
-    alt="image"
-    *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
-    [src]="'http://localhost/eucenje-backend/' + course.image" 
-    [alt]="course.title"
-    class="course-image"
-    (error)="handleImageError($event)"
-  />
-  <div *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" class="course-image-placeholder">
-    <span class="placeholder-icon">📚</span>
-  </div>
-    
-          <div class="course-level-badge" [class]="'level-' + (course.level?.toLowerCase() || 'pocetni')">
-            {{ course.level || 'Početni' }}
-          </div>
+  <div *ngIf="courses.length > 0" class="courses-content">
+    <div *ngFor="let category of sortedCategories" class="category-section">
+      <div class="category-header">
+        <h2 class="category-title">
+          <span class="category-icon">{{ getCategoryIcon(category.key) }}</span>
+          {{ category.key }}
+          <span class="course-count">({{ category.value.length }} kursa)</span>
+        </h2>
+        <div class="category-actions">
+          <button type="button" class="btn-collapse" (click)="toggleCategory(category.key)">
+            {{ isCategoryExpanded(category.key) ? 'Sakrij' : 'Prikaži' }}
+          </button>
         </div>
+      </div>
 
-        <div class="course-content">
-          <h3 class="course-title">
-            <a [routerLink]="['/course', course.id]" class="course-link">
-              {{ course.title }}
-            </a>
-          </h3>
-          
-          <p class="course-description">
-            {{ course.description }}
-          </p>
-
-    
-          <div class="course-meta">
-            <div class="meta-item">
-              <span class="meta-icon">💰</span>
-              <span class="meta-text">{{ course.price ? (course.price + '€') : 'Besplatno' }}</span>
+      <div *ngIf="isCategoryExpanded(category.key)" class="courses-grid">
+        <div *ngFor="let course of category.value" class="course-card">
+          <div class="course-image-container">
+            <img 
+              *ngIf="course.image && course.image !== 'default-course-image.png' && course.image !== 'default-course-image.jpg'"
+              [src]="getImageUrl(course.image)" 
+              [alt]="course.title"
+              class="course-image"
+              (error)="handleImageError($event)"
+            />
+            <div 
+              *ngIf="!course.image || course.image === 'default-course-image.png' || course.image === 'default-course-image.jpg'" 
+              class="course-image-placeholder">
+              <span class="placeholder-icon">📚</span>
             </div>
-            <div class="meta-item">
-              <span class="meta-icon">⭐</span>
-              <span class="meta-text">4.8 (124)</span>
+            
+            <div class="course-level-badge" [class]="'level-' + (course.level?.toLowerCase() || 'pocetni')">
+              {{ course.level || 'Početni' }}
             </div>
           </div>
 
-         
-          <div class="course-actions">
-            <button 
-              class="btn btn-view"
-              [routerLink]="['/course', course.id]"
-            >
-              <span class="btn-icon">👁️</span>
-              Pregledaj
-            </button>
+          <div class="course-content">
+            <h3 class="course-title">
+              <a [routerLink]="['/course', course.id]" class="course-link">
+                {{ course.title }}
+              </a>
+            </h3>
             
-            <button 
-              class="btn btn-edit"
-              (click)="editCourse(course)"
-            >
-              <span class="btn-icon">✏️</span>
-              Uredi
-            </button>
-            
-            <button 
-              class="btn btn-delete"
-              (click)="confirmDelete(course.id)"
-            >
-              <span class="btn-icon">🗑️</span>
-              Obriši
-            </button>
-          </div>
+            <p class="course-description">
+              {{ (course.description || '') | slice:0:150 }}...
+            </p>
 
-       
-          <div class="image-upload-section">
-            <label class="file-upload-label">
-              <input 
-                type="file" 
-                (change)="uploadImage($event, course.id)" 
-                accept="image/*"
-                class="file-input"
-              />
-              <span class="upload-icon">📷</span>
-              Promijeni sliku
-            </label>
+            <div class="course-meta">
+              <div class="meta-item">
+                <span class="meta-icon">💰</span>
+                <span class="meta-text">{{ course.price ? (course.price + '€') : 'Besplatno' }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">⭐</span>
+                <span class="meta-text">4.8 (124)</span>
+              </div>
+            </div>
+
+            <div class="course-actions">
+              <button 
+                type="button"
+                class="btn btn-view"
+                [routerLink]="['/course', course.id]"
+              >
+                <span class="btn-icon">👁️</span>
+                Pregledaj
+              </button>
+              
+              <button 
+                type="button"
+                *ngIf="isAdmin"
+                class="btn btn-edit"
+                (click)="editCourse(course)"
+              >
+                <span class="btn-icon">✏️</span>
+                Uredi
+              </button>
+              
+              <button 
+                type="button"
+                *ngIf="isAdmin"
+                class="btn btn-delete"
+                (click)="confirmDelete(course.id)"
+              >
+                <span class="btn-icon">🗑️</span>
+                Obriši
+              </button>
+            </div>
+
+            <div *ngIf="isAdmin" class="image-upload-section">
+              <label class="file-upload-label">
+                <input 
+                  type="file" 
+                  (change)="uploadImage($event, course.id)" 
+                  accept="image/*"
+                  class="file-input"
+                />
+                <span class="upload-icon">📷</span>
+                Promijeni sliku
+              </label>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
- 
   <div *ngIf="selectedCourse" class="edit-modal">
     <div class="modal-content">
       <div class="modal-header">
         <h3>✏️ Uredi Kurs</h3>
-        <button class="modal-close" (click)="selectedCourse = null">
+        <button type="button" class="modal-close" (click)="selectedCourse = null">
           &times;
         </button>
       </div>
@@ -222,22 +214,20 @@
           </div>
         </div>
 
-      
-      <div class="form-group" *ngIf="selectedCourse.image">
-  <label class="form-label">Trenutna Slika</label>
-  <img
-    alt="image" 
-    *ngIf="selectedCourse.image && selectedCourse.image !== 'images/courses/default-course-image.png'"
-    [src]="'http://localhost/eucenje-backend/' + selectedCourse.image" 
-    class="current-image"
-    (error)="handleImageError($event)"
-  />
-  <div *ngIf="!selectedCourse.image || selectedCourse.image === 'images/courses/default-course-image.png'" class="course-image-placeholder">
-    <span class="placeholder-icon">📚</span>
-  </div>
-</div>
+        <div class="form-group" *ngIf="selectedCourse">
+          <label class="form-label">Trenutna Slika</label>
+          <img
+            *ngIf="selectedCourse.image && selectedCourse.image !== 'default-course-image.png' && selectedCourse.image !== 'default-course-image.jpg'"
+            [src]="getImageUrl(selectedCourse.image)" 
+            class="current-image"
+            (error)="handleImageError($event)"
+          />
+          <div *ngIf="!selectedCourse.image || selectedCourse.image === 'default-course-image.png' || selectedCourse.image === 'default-course-image.jpg'" 
+               class="course-image-placeholder">
+            <span class="placeholder-icon">📚</span>
+          </div>
+        </div>
 
-        
         <div class="form-group">
           <label class="form-label">Promijeni Sliku</label>
           <label class="file-upload-label">
@@ -252,7 +242,6 @@
           </label>
         </div>
 
-    
         <div class="form-actions">
           <button 
             type="button" 

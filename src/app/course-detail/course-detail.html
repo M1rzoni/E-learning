@@ -11,20 +11,28 @@
     </span>
   </nav>
 
-
   <div class="course-main-content">
     <div class="course-hero">
       <div class="course-image-section">
-        <div class="course-image">
-          <img [src]="getImageUrl(course?.image)" 
-               (error)="handleImageError($event)"
-               alt="{{ course?.title }}"
-               class="course-main-image">
-          <div *ngIf="!course?.image" class="image-placeholder">
-            <span>📚</span>
-            <p>Nema slike kursa</p>
-          </div>
-        </div>
+      <div class="course-image">
+  <img [src]="getImageUrl(course?.image)" 
+       (error)="handleImageError($event)"
+       [alt]="course?.title"
+       class="course-main-image"
+       (click)="openCourseVideo()"
+       style="cursor: pointer;">
+  
+  <div class="play-button-overlay" (click)="openCourseVideo()">
+    <div class="play-icon">▶</div>
+    <span class="play-text">Pusti video</span>
+  </div>
+  
+  <div *ngIf="!course?.image || course?.image === 'default-course-image.png' || course?.image === 'default-course-image.jpg'" 
+       class="image-placeholder">
+    <span>📚</span>
+    <p>Nema slike kursa</p>
+  </div>
+</div>
         
         <div class="course-highlights">
           <div class="highlight">
@@ -73,7 +81,6 @@
           </div>
         </div>
 
-      
         <div class="course-purchase-section">
           <h3>Kupi Kurs</h3>
           
@@ -82,12 +89,10 @@
               <span *ngIf="course?.price > 0" class="course-price">{{ course?.price }}€</span>
               <span *ngIf="course?.price === 0" class="course-price free">Besplatno</span>
             </h4>
-            <p class="user-balance">Tvoj balans: {{ userBalance }}€</p>
+            <p class="user-balance">Tvoj balans: {{ userBalance | currency:'EUR' }}</p>
           </div>
 
-      
           <div class="purchase-actions">
-         
             <div *ngIf="course?.price === 0">
               <button (click)="purchaseCourse()" 
                       [disabled]="isPurchasing || isPurchased" 
@@ -96,33 +101,30 @@
               </button>
             </div>
 
-          
             <div *ngIf="course?.price > 0">
-             
               <div *ngIf="isPurchased" class="already-purchased">
                 <button class="btn-purchased" disabled>✅ Već kupljeno</button>
               </div>
 
               <div *ngIf="!isPurchased">
-            
                 <div *ngIf="userBalance >= course?.price">
                   <button (click)="purchaseCourse()" 
                           [disabled]="isPurchasing" 
                           class="btn-purchase">
-                    {{ isPurchasing ? 'Kupovina u toku...' : 'Kupi odmah - ' + course?.price + '€' }}
+                    {{ isPurchasing ? 'Kupovina u toku...' : 'Kupi odmah - ' + (course?.price | currency:'EUR') }}
                   </button>
                 </div>
 
                 <div *ngIf="userBalance < course?.price" class="insufficient-funds">
                   <div class="warning-message">
-                    ⚠️ Nemaš dovoljno sredstava! Trenutni balans: {{ userBalance }}€
+                    ⚠️ Nemaš dovoljno sredstava! Trenutni balans: {{ userBalance | currency:'EUR' }}
                   </div>
                   <div class="quick-add-section">
                     <p>Brzo dodaj sredstva:</p>
                     <div class="quick-buttons">
-                      <button (click)="addFunds(10)" class="btn-quick-add">+10€</button>
-                      <button (click)="addFunds(20)" class="btn-quick-add">+20€</button>
-                      <button (click)="addFunds(50)" class="btn-quick-add">+50€</button>
+                      <button (click)="quickAddFunds(10)" class="btn-quick-add">+10€</button>
+                      <button (click)="quickAddFunds(20)" class="btn-quick-add">+20€</button>
+                      <button (click)="quickAddFunds(50)" class="btn-quick-add">+50€</button>
                     </div>
                     <button (click)="goToWallet()" class="btn-wallet">👛 Upravljanje novčanikom</button>
                   </div>
@@ -179,7 +181,6 @@
       </div>
     </div>
 
-  
     <div class="related-courses">
       <h2>Slični kursevi</h2>
       <div class="courses-grid">

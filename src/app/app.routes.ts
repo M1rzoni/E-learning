@@ -7,15 +7,18 @@ import { HomeComponent } from './home/home';
 import { WalletComponent } from './wallet/wallet';
 import { UserManagementComponent } from './user-menagement/user-menagement';
 import { AuthGuard } from './auth.guard';
+import { MyCoursesComponent } from './my-courses/my-courses';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   {path: 'admin/users', component: UserManagementComponent, canActivate: [AuthGuard]},
   { path: 'home', component: HomeComponent }, 
+  { path: 'my-courses', component: MyCoursesComponent }, 
   { path: 'courses', component: CoursesListComponent },
   { path: 'add-courses', component: AddCourseComponent },
   { path: 'course/:id', component: CourseDetailComponent },
     { path: 'wallet', component: WalletComponent },
   { path: '**', redirectTo: '/login' } 
+  
 ];

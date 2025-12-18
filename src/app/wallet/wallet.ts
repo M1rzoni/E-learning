@@ -35,6 +35,7 @@ export class WalletComponent implements OnInit {
     
     this.walletService.getBalance(this.currentUser.id).subscribe({
       next: (response: any) => {
+        console.log('Balance response:', response);
         if (response.success) {
           this.balance = response.balance;
         } else {
@@ -48,15 +49,21 @@ export class WalletComponent implements OnInit {
         this.isLoading = false;
       }
     });
-
+    
     this.walletService.getPurchaseHistory(this.currentUser.id).subscribe({
       next: (response: any) => {
+        console.log('Transactions response:', response);
         if (response.success) {
-          this.transactions = response.transactions;
+          this.transactions = response.transactions || [];
+          console.log('Loaded transactions:', this.transactions);
+        } else {
+          console.error('Transaction error:', response.message);
+          this.transactions = [];
         }
       },
       error: (error: any) => {
         console.error('Greška pri učitavanju transakcija:', error);
+        this.transactions = [];
       }
     });
   }
@@ -106,6 +113,7 @@ export class WalletComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('sr-RS', {
       day: '2-digit',

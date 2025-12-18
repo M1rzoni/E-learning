@@ -1,4 +1,3 @@
-<a routerLink="/wallet" class="nav-link"> 💰 Novčanik </a>
 <nav class="navbar">
   <div class="nav-container">
     <div class="nav-logo">
@@ -8,6 +7,7 @@
       <a routerLink="/home" class="nav-link active">Početna</a>
       <a routerLink="/courses" class="nav-link">Kursevi</a>
       <a routerLink="/add-courses" class="nav-link">Dodaj Kurs</a>
+      <a routerLink="/my-courses"> Moji Kursevi</a>
       <a *ngIf="isAdmin()" routerLink="/admin/users" class="nav-link">👑 Admin Panel</a>
     </div>
     <div class="nav-user">
@@ -36,14 +36,14 @@
       </div>
       
       <div class="filter-controls">
-        <select title="selectedCategory" [(ngModel)]="selectedCategory" (change)="filterCourses()">
+        <select [(ngModel)]="selectedCategory" (change)="filterCourses()">
           <option value="">Sve kategorije</option>
           <option *ngFor="let category of categories" [value]="category.name">
-            {{ category.name }}
+            {{ category.icon }} {{ category.name }}
           </option>
         </select>
         
-        <select title="sortOption" [(ngModel)]="sortOption" (change)="filterCourses()">
+        <select [(ngModel)]="sortOption" (change)="filterCourses()">
           <option value="newest">Najnovije</option>
           <option value="oldest">Najstarije</option>
           <option value="title">Po naslovu (A-Ž)</option>
@@ -70,22 +70,22 @@
     <div class="courses-grid">
       <div *ngFor="let course of featuredCourses" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-      
- <img 
-  *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
-  [src]="'http://localhost/eucenje-backend/' + course.image" 
-  alt="{{ course.title }}"
-  onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-<div 
-  *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" 
-  class="course-image-placeholder">📚</div>
+          <img 
+            [src]="getImageUrl(course.image)" 
+            [alt]="course.title"
+            (error)="handleImageError($event)">
+          <div 
+            class="course-image-placeholder"
+            [style.display]="!course.image || course.image === 'default-course-image.png' || course.image === 'default-course-image.jpg' ? 'block' : 'none'">
+            📚
+          </div>
         </div>
         <div class="course-content">
           <h3>{{ course.title }}</h3>
-          <p class="course-description">{{ course.description }}</p>
+          <p class="course-description">{{ course.description | slice:0:100 }}...</p>
           <div class="course-meta">
             <span class="course-category">{{ course.category }}</span>
-            <span class="course-rating">⭐ 4.8</span>
+            <span class="course-price">{{ course.price | currency:'EUR' }}</span>
           </div>
         </div>
       </div>
@@ -101,7 +101,9 @@
         <div class="category-icon">{{ category.icon }}</div>
         <h3>{{ category.name }}</h3>
         <p>{{ getCoursesByCategory(category.name).length }} kurseva</p>
-        <button class="category-button" [routerLink]="['/courses']" [queryParams]="{category: category.name}">Pogledaj</button>
+        <button class="category-button" [routerLink]="['/courses']" [queryParams]="{category: category.name}">
+          Pogledaj
+        </button>
       </div>
     </div>
   </div>
@@ -111,24 +113,30 @@
   <div class="container">
     <div class="section-header">
       <h2>{{ category.name }} Kursevi</h2>
-      <a [routerLink]="['/courses']" [queryParams]="{category: category.name}" class="view-all">Pogledaj sve</a>
+      <a [routerLink]="['/courses']" [queryParams]="{category: category.name}" class="view-all">
+        Pogledaj sve
+      </a>
     </div>
     <div class="courses-grid">
       <div *ngFor="let course of getCoursesByCategory(category.name)" class="course-card" [routerLink]="['/course', course.id]">
         <div class="course-image">
-      
-          <img *ngIf="course.image && course.image !== 'images/courses/default-course-image.png'" 
-               [src]="'http://localhost/eucenje-backend/' + course.image" 
-               alt="{{ course.title }}"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-          <div *ngIf="!course.image || course.image === 'images/courses/default-course-image.png'" 
-               class="course-image-placeholder">📚</div>
+          <img 
+            *ngIf="course.image && course.image !== 'default-course-image.png' && course.image !== 'default-course-image.jpg'"
+            [src]="getImageUrl(course.image)" 
+            [alt]="course.title"
+            (error)="handleImageError($event)">
+          <div 
+            *ngIf="!course.image || course.image === 'default-course-image.png' || course.image === 'default-course-image.jpg'"
+            class="course-image-placeholder">
+            📚
+          </div>
         </div>
         <div class="course-content">
           <h3>{{ course.title }}</h3>
-          <p class="course-description">{{ course.description }}</p>
+          <p class="course-description">{{ course.description | slice:0:80 }}...</p>
           <div class="course-meta">
             <span class="course-category">{{ course.category }}</span>
+            <span class="course-level">{{ course.level }}</span>
           </div>
         </div>
       </div>

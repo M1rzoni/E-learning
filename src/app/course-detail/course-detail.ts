@@ -23,6 +23,7 @@ export class CourseDetailComponent implements OnInit {
   isLoading: boolean = true;
   isPurchasing: boolean = false;
   isAdmin: boolean = false; 
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -31,9 +32,8 @@ export class CourseDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-     const id = this.route.snapshot.paramMap.get('id');
-      console.log('Course ID:', id);
-    
+    const id = this.route.snapshot.paramMap.get('id');
+    console.log('Course ID:', id);
     
     const userData = localStorage.getItem('currentUser');
     if (userData) {
@@ -44,29 +44,43 @@ export class CourseDetailComponent implements OnInit {
       this.checkIfSaved();
     }
 
-     this.http.get(`http://localhost/eucenje-backend/get-course.php?id=${id}`)
-    .subscribe({
-      next: (data: any) => {
-         this.course = data;
+    this.http.get(`http://localhost/eucenje-backend/get-course.php?id=${id}`)
+      .subscribe({
+        next: (data: any) => {
+          this.course = data;
           this.coursePrice = parseFloat(data.price) || 0;
+        
+          console.log('=== DETALJNI DEBUG ===');
+          console.log('Cijeli odgovor:', data);
+          console.log('Sva polja kursa:', Object.keys(data));
+          console.log('Image property:', data.image);
+          console.log('Has image property:', data.hasOwnProperty('image'));
+          console.log('Image URL (getImageUrl):', this.getImageUrl(data.image));
+          console.log('==============');
+          
           this.isLoading = false;
-        
-        // DEBUG
-           console.log('=== DETALJNI DEBUG ===');
-        console.log('Cijeli odgovor:', data);
-        console.log('Sva polja kursa:', Object.keys(data));
-        console.log('Image path from API:', data.image);
-        console.log('Has image property:', data.hasOwnProperty('image'));
-        console.log('Full URL:', this.getImageUrl(data.image));
-        console.log('==============');
-        
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Greška pri učitavanju kursa:', error);
-        this.isLoading = false;
-      }
-    });
+        },
+        error: (error) => {
+          console.error('Greška pri učitavanju kursa:', error);
+          this.isLoading = false;
+        }
+      });
+  }
+
+  getImageUrl(imageName: string): string {
+    if (!imageName || imageName === 'default-course-image.png' || imageName === 'default-course-image.jpg') {
+      return 'http://localhost/eucenje-backend/uploads/courses/default-course-image.png';
+    }
+    
+    if (imageName.startsWith('http')) {
+      return imageName;
+    }
+    
+    return 'http://localhost/eucenje-backend/uploads/courses/' + imageName;
+  }
+
+  handleImageError(event: any) {
+    event.target.src = 'http://localhost/eucenje-backend/uploads/courses/default-course-image.png';
   }
 
   getUserBalance() {
@@ -114,7 +128,6 @@ export class CourseDetailComponent implements OnInit {
       return;
     }
 
-    // Dodatna provjera na frontendu
     if (this.coursePrice > 0 && this.userBalance < this.coursePrice) {
       alert('Nemate dovoljno sredstava na računu!');
       return;
@@ -130,7 +143,7 @@ export class CourseDetailComponent implements OnInit {
           if (response.success) {
             alert('Kurs uspešno kupljen! ' + (response.email_sent ? 'Email potvrda je poslata.' : ''));
             this.isPurchased = true;
-            this.getUserBalance(); // Refresh balans
+            this.getUserBalance(); 
           } else {
             alert('Greška: ' + response.message);
           }
@@ -143,7 +156,7 @@ export class CourseDetailComponent implements OnInit {
       });
   }
 
-    quickAddFunds(amount: number) {
+  quickAddFunds(amount: number) {
     if (!this.currentUser) return;
     
     this.isLoading = true;
@@ -153,7 +166,7 @@ export class CourseDetailComponent implements OnInit {
           this.isLoading = false;
           if (response.success) {
             alert(`Uspešno ste dodali ${amount}€ na novčanik!`);
-            this.getUserBalance(); // Refresh balans
+            this.getUserBalance(); 
           } else {
             alert('Greška: ' + response.message);
           }
@@ -205,13 +218,12 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
-    editCourse() {
+  editCourse() {
     if (this.isAdmin) {
       this.router.navigate(['/edit-course', this.course.id]);
     }
   }
 
-  
   deleteCourse() {
     if (this.isAdmin && confirm('Jeste li sigurni da želite obrisati ovaj kurs?')) {
       this.http.post('http://localhost/eucenje-backend/delete-course.php', { id: this.course.id })
@@ -229,34 +241,6 @@ export class CourseDetailComponent implements OnInit {
         });
     }
   }
-
-  handleImageError(event: any) {
-  event.target.src = 'http://localhost/eucenje-backend/course_images/default-course-image.png';
-}
-getImageUrl(imagePath: string): string {
-  if (!imagePath) {
-    return 'http://localhost/eucenje-backend/course_images/default-course-image.png';
-  }
-  
-  // Ako putanja već ima pun URL
-  if (imagePath.startsWith('http')) {
-    return imagePath;
-  }
-  
-  // Ako putanja počinje sa 'course_images/'
-  if (imagePath.startsWith('course_images/')) {
-    return 'http://localhost/eucenje-backend/' + imagePath;
-  }
-  
-  // Ako je samo naziv fajla (npr: "68d58b0b4ab55_1788817033.png")
-  if (imagePath.includes('.')) {
-    return 'http://localhost/eucenje-backend/course_images/' + imagePath;
-  }
-  
-  // Default fallback
-  return 'http://localhost/eucenje-backend/course_images/default-course-image.png';
-}
-
 
   addFunds(amount: number) {
     this.isLoading = true;
@@ -279,8 +263,31 @@ getImageUrl(imagePath: string): string {
       });
   }
 
+openCourseVideo() {
+  const youtubeUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; 
+  
+  const categoryVideos: { [key: string]: string } = {
+    'Frontend': 'https://www.youtube.com/watch?v=hdI2bqOjy3c', 
+    'Backend': 'https://www.youtube.com/watch?v=WLQDpY7lOLg', 
+    'Dizajn': 'https://www.youtube.com/watch?v=_a5j7KoflTs', 
+    'Marketing': 'https://www.youtube.com/watch?v=aFwZgth790Q', 
+    'Data Science': 'https://www.youtube.com/watch?v=ua-CiDNNj30', 
+    'Mobile': 'https://www.youtube.com/watch?v=0-S5a0eXPoc', 
+  };
+  
+  const videoUrl = this.course?.category && categoryVideos[this.course.category] 
+    ? categoryVideos[this.course.category] 
+    : 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; 
+  
+  window.open(videoUrl, '_blank');
+}
+
+openCourseVideoSimple() {
+  const defaultVideoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  window.open(defaultVideoUrl, '_blank');
+}
+
   goToWallet() {
     this.router.navigate(['/wallet']);
   }
 }
-

@@ -18,12 +18,11 @@
         placeholder="Unesite iznos" 
         min="1"
         class="amount-input"
-      >
+      />
       <button (click)="addFunds()" [disabled]="isLoading" class="btn-add">
         {{ isLoading ? 'Dodavanje...' : 'Dodaj sredstva' }}
       </button>
     </div>
-    
     <div class="quick-add-buttons">
       <button (click)="quickAdd(10)">+10€</button>
       <button (click)="quickAdd(20)">+20€</button>

@@ -1,0 +1,132 @@
+<div class="my-courses-container">
+  <div class="page-header">
+    <h1>📚 Moji Kursevi</h1>
+    <p class="subtitle">Pregledajte svoje kupljene i sačuvane kurseve</p>
+  </div>
+
+  <div class="tabs-navigation">
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'purchased'"
+      (click)="switchTab('purchased')">
+      <span class="tab-icon">✅</span>
+      Kupljeni Kursevi
+      <span class="tab-count">({{ purchasedCourses.length }})</span>
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'saved'"
+      (click)="switchTab('saved')">
+      <span class="tab-icon">💾</span>
+      Sačuvani Kursevi
+      <span class="tab-count">({{ savedCourses.length }})</span>
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Učitavanje kurseva...</p>
+  </div>
+
+  <div *ngIf="activeTab === 'purchased' && !isLoading" class="courses-content">
+    <div *ngIf="purchasedCourses.length === 0" class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>Nemate kupljenih kurseva</h3>
+      <p>Istražite našu ponudu i započnite svoje učenje!</p>
+      <a routerLink="/courses" class="btn-primary">Pregled Svih Kurseva</a>
+    </div>
+
+    <div *ngIf="purchasedCourses.length > 0" class="courses-grid">
+      <div *ngFor="let course of purchasedCourses" class="course-card">
+        <div class="course-image-container">
+          <img 
+            [src]="getImageUrl(course.image)" 
+            [alt]="course.title"
+            class="course-image"
+            (error)="handleImageError($event)"
+          />
+          <div class="course-badge purchased">Kupljeno</div>
+        </div>
+
+        <div class="course-content">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-description">
+            {{ (course.description || '') | slice:0:100 }}...
+          </p>
+
+          <div class="course-meta">
+            <span class="meta-item">
+              <span class="meta-icon">📊</span>
+              {{ course.level || 'Početni' }}
+            </span>
+            <span class="meta-item">
+              <span class="meta-icon">📅</span>
+              Kupljeno {{ formatDate(course.purchased_at) }}
+            </span>
+          </div>
+
+          <div class="course-actions">
+            <a [routerLink]="['/course', course.id]" class="btn btn-view">
+              <span class="btn-icon">👁️</span>
+              Nastavi Učenje
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'saved' && !isLoading" class="courses-content">
+    <div *ngIf="savedCourses.length === 0" class="empty-state">
+      <div class="empty-icon">💾</div>
+      <h3>Nemate sačuvanih kurseva</h3>
+      <p>Sačuvajte kurseve koje želite kupiti kasnije!</p>
+      <a routerLink="/courses" class="btn-primary">Pregled Svih Kurseva</a>
+    </div>
+
+    <div *ngIf="savedCourses.length > 0" class="courses-grid">
+      <div *ngFor="let course of savedCourses" class="course-card">
+        <div class="course-image-container">
+          <img 
+            [src]="getImageUrl(course.image)" 
+            [alt]="course.title"
+            class="course-image"
+            (error)="handleImageError($event)"
+          />
+          <div class="course-badge saved">Sačuvano</div>
+        </div>
+
+        <div class="course-content">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-description">
+            {{ (course.description || '') | slice:0:100 }}...
+          </p>
+
+          <div class="course-meta">
+            <span class="meta-item">
+              <span class="meta-icon">💰</span>
+              {{ course.price ? (course.price + '€') : 'Besplatno' }}
+            </span>
+            <span class="meta-item">
+              <span class="meta-icon">📊</span>
+              {{ course.level || 'Početni' }}
+            </span>
+          </div>
+
+          <div class="course-actions">
+            <a [routerLink]="['/course', course.id]" class="btn btn-view">
+              <span class="btn-icon">👁️</span>
+              Pogledaj
+            </a>
+            <button 
+              class="btn btn-remove"
+              (click)="removeSavedCourse(course.id)">
+              <span class="btn-icon">🗑️</span>
+              Ukloni
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

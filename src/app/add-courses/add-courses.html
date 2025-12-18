@@ -1,14 +1,11 @@
 <div class="add-course-container">
   <div class="form-card">
-    <!-- Header -->
     <div class="form-header">
       <h2>Dodaj novi kurs</h2>
       <p>Popunite informacije o novom kursu koji želite da dodate u ponudu</p>
     </div>
 
-    <!-- Forma -->
     <form (ngSubmit)="addCourse()" class="course-form" enctype="multipart/form-data">
-      <!-- Slika kursa -->
       <div class="form-group">
         <label for="image" class="form-label">Slika kursa</label>
         <div class="image-upload-container">
@@ -142,7 +139,6 @@
       </div>
     </form>
 
-    <!-- Poruka o statusu -->
     <div 
       *ngIf="message" 
       class="status-message"
@@ -155,7 +151,6 @@
     </div>
   </div>
 
-  <!-- Sidebar sa uputstvima -->
   <div class="guidance-sidebar">
     <h3>💡 Savjeti za dobar kurs</h3>
     <div class="tip-card">

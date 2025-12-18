@@ -50,7 +50,6 @@
   font-size: 0.95rem;
 }
 
-/* Stilovi za upload slike */
 .image-upload-container {
   display: flex;
   flex-direction: column;
@@ -149,7 +148,6 @@
   cursor: not-allowed;
 }
 
-/* Ostali stilovi ostaju isti... */
 .form-input,
 .form-select,
 .form-textarea {
